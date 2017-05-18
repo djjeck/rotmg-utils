@@ -1,0 +1,247 @@
+<html>
+  <head>
+    <style type="text/css">
+      body {
+        --sprite-size: 64px;
+        --item-image-margin: 5px;
+        
+        background-color: #AAAAAA;
+        padding: 20px 40px;
+        font-family: Helvetica, Arial, sans-serif;
+      }
+      
+      .sprite {
+        width: var(--sprite-size);
+      }
+      
+      #content {
+        display: block;
+        margin: 0px auto;
+        width: auto;
+        
+        padding: 30px;
+        background-color: #FFFFFF;
+        
+        user-select: none;
+      }
+      
+      .row {
+        display: block;
+      }
+      
+      .item {
+        display: inline-block;
+        margin: var(--item-image-margin);
+        box-shadow: 0px 0px 5px black;
+        background-color: #FFFFFF;
+      }
+      
+      .item.missing {
+        background-color: #FFAAAA;
+      }
+      
+      .item.missing .itemImage {
+        filter: grayscale(100%);
+        opacity: .6;
+      }
+      
+      .quantityContainer {
+        display: block;
+        max-width: var(--sprite-size);
+        padding: 5px 0px;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+        background-color: #FFFFFF;
+      }
+      
+      .quantity {
+        display: inline-block;
+        margin: 0px 5px;
+      }
+      
+      .quantityButton {
+        display: inline-block;
+        font-size: 0.7em;
+        cursor: pointer;
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, .5);
+      }
+      
+      .quantityButton:hover {
+        box-shadow: 0px 0px 2px black;
+      }
+      
+      .quantityButton.disabled {
+        opacity: 0.3;
+      }
+    </style>
+    <script type="text/javascript">
+      /**
+       * Armors from https://www.realmeye.com/wiki/armor
+       * Weapons from https://www.realmeye.com/wiki/weapons
+       */
+      const items = {
+        t7: {
+          armors: {
+            leather: 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T6%20Wyvern%20Skin%20Armor.png',
+            robe: 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T6%20Robe%20of%20the%20Invoker.png',
+            heavy: 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T6%20Mithril%20Chainmail.png',
+          },
+          weapons: {
+            dagger: 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T7%20Mithril%20Dagger.png',
+            bow: 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T7%20Heavy%20Crossbow.png',
+            staff: 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T7%20Staff%20of%20Destruction.png',
+            wand: 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T7%20Wand%20of%20Arcane%20Flame.png',
+            sword: 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T7%20Golden%20Sword.png',
+            katana: 'https://www.realmeye.com/s/a/img/wiki/Buster%20Katana.png',
+          },
+          rewards: [
+            'https://static.drips.pw/rotmg/wiki/Consumable/Other/XP%20Booster%201%20hr.png',
+          ],
+        },
+        t8: {
+          armors: {
+            leather: 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T7%20Studded%20Leather%20Armor.png',
+            robe: 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T7%20Robe%20of%20the%20Illusionist.png',
+            heavy: 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T7%20Mithril%20Armor.png',
+          },
+          weapons: {
+            dagger: 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T8%20Fire%20Dagger.png',
+            bow: 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T8%20Golden%20Bow.png',
+            staff: 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T8%20Staff%20of%20Horror.png',
+            wand: 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T8%20Wand%20of%20Death.png',
+            sword: 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T8%20Ravenheart%20Sword.png',
+            katana: 'https://www.realmeye.com/s/a/img/wiki/Demon%20Edge.png',
+          },
+          rewards: [
+            'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Tier%20Potion.png',
+            'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Drop%20Potion.png',
+          ],
+        },
+        t9: {
+          armors: {
+            leather: 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T8%20Drake%20Hide%20Armor.png',
+            robe: 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T8%20Robe%20of%20the%20Master.png',
+            heavy: 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T8%20Dragonscale%20Armor.png',
+          },
+          weapons: {
+            dagger: 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T9%20Ragetalon%20Dagger.png',
+            bow: 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T9%20Verdant%20Bow.png',
+            staff: 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T9%20Staff%20of%20Necrotic%20Arcana.png',
+            wand: 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T9%20Wand%20of%20Deep%20Sorcery.png',
+            sword: 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T9%20Dragonsoul%20Sword.png',
+            katana: 'https://www.realmeye.com/s/a/img/wiki/Jewel%20Eye%20Katana.png',
+          },
+          rewards: [
+            'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Vitality.png',
+            'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Wisdom.png',
+          ],
+        },
+      };
+      
+      function render() {
+        const contentEl = document.getElementById('content');
+        
+        for (const tierKey in items) {
+          const rowEl = document.createElement('div');
+          rowEl.className = 'row';
+        
+          // Render items
+          for (const typeKey of ['armors', 'weapons']) {
+            for (const classKey in items[tierKey][typeKey]) {
+              const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
+              const src = items[tierKey][typeKey][classKey];
+              
+              let quantity = readQuantity(key);
+              
+              const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
+              const itemEl = itemTemplate.querySelector('.item');
+              const imageEl = itemTemplate.querySelector('.itemImage');
+              const quantityEl = itemTemplate.querySelector('.quantity');
+              const [quantityLessEl, quantityMoreEl] = itemTemplate.querySelectorAll('.quantityButton');
+              
+              const updateQuantity = () => {
+                quantityEl.textContent = quantity;
+                itemEl.classList.toggle('missing', quantity == 0);
+                quantityLessEl.classList.toggle('disabled', quantity == 0);
+              }
+              
+              const increaseQuantity = () => {
+                console.log(`increasing quantity of ${key}`);
+                quantity++;
+                writeQuantity(key, quantity);
+                updateQuantity();
+              };
+              
+              const decreaseQuantity = () => {
+                if (quantity == 0) {
+                  return;
+                }
+                console.log(`reducing quantity of ${key}`);
+                quantity--;
+                writeQuantity(key, quantity);
+                updateQuantity();
+              };
+
+              imageEl.src = src;
+              quantityLessEl.onclick = decreaseQuantity;
+              quantityMoreEl.onclick = increaseQuantity;
+              updateQuantity();
+              
+              rowEl.appendChild(itemTemplate);
+            }
+          }
+          
+          // Render rewards
+          for (const reward of items[tierKey]['rewards']) {
+            const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
+            const imageEl = rewardTemplate.querySelector('.rewardImage');
+            imageEl.src = reward;
+            rowEl.appendChild(imageEl);
+          }
+          
+          contentEl.appendChild(rowEl);
+        }
+      }
+      
+      function readQuantity(key) {
+        const quantity = localStorage.getItem(key);
+        if (quantity === null) {
+          writeQuantity(key, 0);
+          return 0;
+        }
+        return quantity;
+      }
+      
+      function writeQuantity(key, quantity) {
+        localStorage.setItem(key, quantity);
+      }
+    </script>
+    <title>Tinkerer items</title>
+  </head>
+  <body onload="render();">
+    <div class="tinkerer">
+      <img class="sprite" src="https://static.drips.pw/rotmg/wiki/Environment/Quest%20Rewards.png" />
+    </div>
+    <div id="content">
+    </div>
+    
+    <template id="itemTemplate">
+      <div class="item">
+        <img class="sprite itemImage" />
+        <div class="quantityContainer">
+          <!-- White Down-Pointing Triangle https://unicode-table.com/en/25BD/ -->
+          <span class="quantityButton">▽</span>
+          <span class="quantity"></span>
+          <!-- White Up-Pointing Triangle https://unicode-table.com/en/25B3/ -->
+          <span class="quantityButton">△</span>
+        </div>
+      </div>
+    </template>
+    
+    <template id="rewardTemplate">
+      <img class="sprite rewardImage" />
+    </template>
+  </body>
+</html>
+

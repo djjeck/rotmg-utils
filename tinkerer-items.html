@@ -101,19 +101,29 @@
     </style>
     <script type="text/javascript">
       class Storage {
+        constructor() {
+          this.cache = {};
+        }
+        
         read(key, defaultValue = 0) {
+          if (key in this.cache) {
+            console.log(`reading ${key} -> ${this.cache[key]} (cached)`);
+            return this.cache[key];
+          }
           const value = localStorage.getItem(key);
           if (value === null) {
             console.log(`setting default for ${key} <- ${defaultValue}`);
             this.write(key, defaultValue);
             return defaultValue;
           }
+          this.cache[key] = value;
           console.log(`reading ${key} -> ${value}`);
           return value;          
         }
         
         write(key, value) {
           console.log(`writing ${key} <- ${value}`);
+          this.cache[key] = value;
           localStorage.setItem(key, value);
         }
       }

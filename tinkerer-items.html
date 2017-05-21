@@ -94,6 +94,9 @@
       
       #config input {
         font-weight: bold;
+        width: 60px;
+        padding: 3px 2px;
+        text-align: right;
       }
     </style>
     <script type="text/javascript">
@@ -161,8 +164,9 @@
       };
       
       function bodyLoad() {
-        render();
+        // Initialize config first, for defaults.
         initConfig();
+        render();
       }
       
       function render() {
@@ -239,15 +243,29 @@
         
         enoughArmorInput.value = enoughArmor;
         enoughWeaponInput.value = enoughWeapon;
+        updateVaultSlotsConfig();
         
         enoughArmorInput.onclick = () => {
           writeQuantity('enough-armors', enoughArmorInput.value);
+          updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
         enoughWeaponInput.onclick = () => {
           writeQuantity('enough-weapons', enoughWeaponInput.value);
+          updateVaultSlotsConfig();
           decorateQuantities('weapons');
         };
+      }
+      
+      function updateVaultSlotsConfig() {
+        const vaultSlots = 3 * (
+          readQuantity('enough-armors') * 3 +
+          readQuantity('enough-weapons') * 6);
+        
+        const vaultChestsInput = document.getElementById('config-vault-chests');
+        const vaultSlotsInput = document.getElementById('config-vault-slots');
+        vaultChestsInput.value = roundFloat(vaultSlots / 8);
+        vaultSlotsInput.value = vaultSlots;
       }
       
       function decorateQuantities(typeKey) {
@@ -281,6 +299,10 @@
         console.log(`writing ${key} <- ${quantity}`);
         localStorage.setItem(key, quantity);
       }
+      
+      function roundFloat(number) {
+        return Math.floor(number * 100) / 100;
+      }
     </script>
     <title>Tinkerer items</title>
   </head>
@@ -293,11 +315,20 @@
     <div id="config">
       <label>
         <span class="label">Enough armors</span>
-        <input id="config-enough-armors" type="number" min="1" max="9" />
+        <input id="config-enough-armors" type="number" min="1" max="99" />
       </label>
       <label>
         <span class="label">Enough weapons</span>
-        <input id="config-enough-weapons" type="number" min="1" max="9" />
+        <input id="config-enough-weapons" type="number" min="1" max="99" />
+      </label>
+      
+      <label>
+        <span class="label">Vault chests</span>
+        <input id="config-vault-chests" type="number" min="1" max="80" disabled="disabled" />
+      </label>
+      <label>
+        <span class="label">Vault slots</span>
+        <input id="config-vault-slots" type="number" min="1" max="640" disabled="disabled" />
       </label>
     </div>
     

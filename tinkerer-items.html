@@ -14,14 +14,17 @@
         width: var(--sprite-size);
       }
       
-      #content {
+      #content,
+      #config {
         display: block;
-        margin: 0px auto;
+        margin: 20px auto;
         width: auto;
         
         padding: 30px;
         background-color: #FFFFFF;
-        
+      }
+      
+      #content {
         user-select: none;
       }
       
@@ -40,7 +43,11 @@
         background-color: #FFAAAA;
       }
       
-      .item.missing .itemImage {
+      .item.enough {
+        background-color: #AAFFAA;
+      }
+      
+      .item.enough .itemImage {
         filter: grayscale(100%);
         opacity: .6;
       }
@@ -73,6 +80,20 @@
       
       .quantityButton.disabled {
         opacity: 0.3;
+      }
+      
+      #config label {
+        display: block;
+        margin: 4px;
+      }
+      
+      #config .label {
+        display: inline-block;
+        width: 200px;
+      }
+      
+      #config input {
+        font-weight: bold;
       }
     </style>
     <script type="text/javascript">
@@ -139,6 +160,11 @@
         },
       };
       
+      function bodyLoad() {
+        render();
+        initConfig();
+      }
+      
       function render() {
         const contentEl = document.getElementById('content');
         
@@ -160,14 +186,15 @@
               const quantityEl = itemTemplate.querySelector('.quantity');
               const [quantityLessEl, quantityMoreEl] = itemTemplate.querySelectorAll('.quantityButton');
               
+              itemEl.id = `item-${tierKey}-${typeKey}-${classKey}`;
+              
               const updateQuantity = () => {
                 quantityEl.textContent = quantity;
-                itemEl.classList.toggle('missing', quantity == 0);
                 quantityLessEl.classList.toggle('disabled', quantity == 0);
+                decorateQuantity(itemEl, typeKey, quantity);
               }
               
               const increaseQuantity = () => {
-                console.log(`increasing quantity of ${key}`);
                 quantity++;
                 writeQuantity(key, quantity);
                 updateQuantity();
@@ -177,7 +204,6 @@
                 if (quantity == 0) {
                   return;
                 }
-                console.log(`reducing quantity of ${key}`);
                 quantity--;
                 writeQuantity(key, quantity);
                 updateQuantity();
@@ -204,26 +230,75 @@
         }
       }
       
-      function readQuantity(key) {
+      function initConfig() {
+        const enoughArmor = readQuantity('enough-armors', 2);
+        const enoughWeapon = readQuantity('enough-weapons', 3);
+        
+        const enoughArmorInput = document.getElementById('config-enough-armors');
+        const enoughWeaponInput = document.getElementById('config-enough-weapons');
+        
+        enoughArmorInput.value = enoughArmor;
+        enoughWeaponInput.value = enoughWeapon;
+        
+        enoughArmorInput.onclick = () => {
+          writeQuantity('enough-armors', enoughArmorInput.value);
+          decorateQuantities('armors');
+        };
+        enoughWeaponInput.onclick = () => {
+          writeQuantity('enough-weapons', enoughWeaponInput.value);
+          decorateQuantities('weapons');
+        };
+      }
+      
+      function decorateQuantities(typeKey) {
+        for (const tierKey in items) {
+          for (const classKey in items[tierKey][typeKey]) {
+            const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
+            const id = `item-${tierKey}-${typeKey}-${classKey}`;
+            const itemEl = document.getElementById(id);
+            decorateQuantity(itemEl, typeKey, readQuantity(key))
+          }
+        }
+      }
+      
+      function decorateQuantity(element, type, quantity) {
+        element.classList.toggle('missing', quantity == 0);
+        element.classList.toggle('enough', quantity >= readQuantity(`enough-${type}`));     
+      }
+      
+      function readQuantity(key, defaultValue = 0) {
         const quantity = localStorage.getItem(key);
         if (quantity === null) {
-          writeQuantity(key, 0);
-          return 0;
+          console.log(`setting default for ${key} <- ${defaultValue}`);
+          writeQuantity(key, defaultValue);
+          return defaultValue;
         }
+        console.log(`reading ${key} -> ${quantity}`);
         return quantity;
       }
       
       function writeQuantity(key, quantity) {
+        console.log(`writing ${key} <- ${quantity}`);
         localStorage.setItem(key, quantity);
       }
     </script>
     <title>Tinkerer items</title>
   </head>
-  <body onload="render();">
+  <body onload="bodyLoad();">
     <div class="tinkerer">
       <img class="sprite" src="https://static.drips.pw/rotmg/wiki/Environment/Quest%20Rewards.png" />
     </div>
     <div id="content">
+    </div>
+    <div id="config">
+      <label>
+        <span class="label">Enough armors</span>
+        <input id="config-enough-armors" type="number" min="1" max="9" />
+      </label>
+      <label>
+        <span class="label">Enough weapons</span>
+        <input id="config-enough-weapons" type="number" min="1" max="9" />
+      </label>
     </div>
     
     <template id="itemTemplate">

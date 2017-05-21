@@ -128,6 +128,12 @@
         }
       }
       
+      const Tier = {
+        T7: 7,
+        T8: 8,
+        T9: 9,
+      };
+      
       const storage = new Storage();
       
       /**
@@ -202,10 +208,16 @@
       function render() {
         const contentEl = document.getElementById('content');
         
-        for (const tierKey in items) {
+        for (const tier of Object.values(Tier)) {
+          const tierKey =
+              tier == Tier.T7 ? 't7' :
+              tier == Tier.T8 ? 't8' :
+              tier == Tier.T9 ? 't9' :
+              '??';
+          
           const rowEl = document.createElement('div');
           rowEl.className = 'row';
-        
+          
           // Render items
           for (const typeKey of ['armors', 'weapons']) {
             for (const classKey in items[tierKey][typeKey]) {

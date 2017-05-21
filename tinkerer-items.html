@@ -100,6 +100,26 @@
       }
     </style>
     <script type="text/javascript">
+      class Storage {
+        read(key, defaultValue = 0) {
+          const value = localStorage.getItem(key);
+          if (value === null) {
+            console.log(`setting default for ${key} <- ${defaultValue}`);
+            this.write(key, defaultValue);
+            return defaultValue;
+          }
+          console.log(`reading ${key} -> ${value}`);
+          return value;          
+        }
+        
+        write(key, value) {
+          console.log(`writing ${key} <- ${value}`);
+          localStorage.setItem(key, value);
+        }
+      }
+      
+      const storage = new Storage();
+      
       /**
        * Armors from https://www.realmeye.com/wiki/armor
        * Weapons from https://www.realmeye.com/wiki/weapons
@@ -182,7 +202,7 @@
               const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
               const src = items[tierKey][typeKey][classKey];
               
-              let quantity = readQuantity(key);
+              let quantity = storage.read(key);
               
               const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
               const itemEl = itemTemplate.querySelector('.item');
@@ -200,7 +220,7 @@
               
               const increaseQuantity = () => {
                 quantity++;
-                writeQuantity(key, quantity);
+                storage.write(key, quantity);
                 updateQuantity();
               };
               
@@ -209,7 +229,7 @@
                   return;
                 }
                 quantity--;
-                writeQuantity(key, quantity);
+                storage.write(key, quantity);
                 updateQuantity();
               };
 
@@ -235,8 +255,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = readQuantity('enough-armors', 2);
-        const enoughWeapon = readQuantity('enough-weapons', 3);
+        const enoughArmor = storage.read('enough-armors', 2);
+        const enoughWeapon = storage.read('enough-weapons', 3);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');
@@ -246,12 +266,12 @@
         updateVaultSlotsConfig();
         
         enoughArmorInput.onclick = () => {
-          writeQuantity('enough-armors', enoughArmorInput.value);
+          storage.write('enough-armors', enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
         enoughWeaponInput.onclick = () => {
-          writeQuantity('enough-weapons', enoughWeaponInput.value);
+          storage.write('enough-weapons', enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
         };
@@ -259,8 +279,8 @@
       
       function updateVaultSlotsConfig() {
         const vaultSlots = 3 * (
-          readQuantity('enough-armors') * 3 +
-          readQuantity('enough-weapons') * 6);
+          storage.read('enough-armors') * 3 +
+          storage.read('enough-weapons') * 6);
         
         const vaultChestsInput = document.getElementById('config-vault-chests');
         const vaultSlotsInput = document.getElementById('config-vault-slots');
@@ -274,30 +294,14 @@
             const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
             const id = `item-${tierKey}-${typeKey}-${classKey}`;
             const itemEl = document.getElementById(id);
-            decorateQuantity(itemEl, typeKey, readQuantity(key))
+            decorateQuantity(itemEl, typeKey, storage.read(key))
           }
         }
       }
       
       function decorateQuantity(element, type, quantity) {
         element.classList.toggle('missing', quantity == 0);
-        element.classList.toggle('enough', quantity >= readQuantity(`enough-${type}`));     
-      }
-      
-      function readQuantity(key, defaultValue = 0) {
-        const quantity = localStorage.getItem(key);
-        if (quantity === null) {
-          console.log(`setting default for ${key} <- ${defaultValue}`);
-          writeQuantity(key, defaultValue);
-          return defaultValue;
-        }
-        console.log(`reading ${key} -> ${quantity}`);
-        return quantity;
-      }
-      
-      function writeQuantity(key, quantity) {
-        console.log(`writing ${key} <- ${quantity}`);
-        localStorage.setItem(key, quantity);
+        element.classList.toggle('enough', quantity >= storage.read(`enough-${type}`));     
       }
       
       function roundFloat(number) {

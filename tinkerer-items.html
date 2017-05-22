@@ -222,44 +222,10 @@
             for (const classKey in items[tier][typeKey]) {
               const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
               const src = items[tier][typeKey][classKey];
+              const id = `item-${tierKey}-${typeKey}-${classKey}`;
               
-              let quantity = storage.read(key);
-              
-              const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
-              const itemEl = itemTemplate.querySelector('.item');
-              const imageEl = itemTemplate.querySelector('.itemImage');
-              const quantityEl = itemTemplate.querySelector('.quantity');
-              const [quantityLessEl, quantityMoreEl] = itemTemplate.querySelectorAll('.quantityButton');
-              
-              itemEl.id = `item-${tierKey}-${typeKey}-${classKey}`;
-              
-              const updateQuantity = () => {
-                quantityEl.textContent = quantity;
-                quantityLessEl.classList.toggle('disabled', quantity == 0);
-                decorateQuantity(itemEl, typeKey, quantity);
-              }
-              
-              const increaseQuantity = () => {
-                quantity++;
-                storage.write(key, quantity);
-                updateQuantity();
-              };
-              
-              const decreaseQuantity = () => {
-                if (quantity == 0) {
-                  return;
-                }
-                quantity--;
-                storage.write(key, quantity);
-                updateQuantity();
-              };
-
-              imageEl.src = src;
-              quantityLessEl.onclick = decreaseQuantity;
-              quantityMoreEl.onclick = increaseQuantity;
-              updateQuantity();
-              
-              rowEl.appendChild(itemTemplate);
+              const itemEl = renderItem(key, typeKey, src, id);
+              rowEl.appendChild(itemEl);
             }
           }
           
@@ -273,6 +239,46 @@
           
           contentEl.appendChild(rowEl);
         }
+      }
+      
+      function renderItem(key, typeKey, src, id) {
+        let quantity = storage.read(key);
+        
+        const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
+        const itemEl = itemTemplate.querySelector('.item');
+        const imageEl = itemTemplate.querySelector('.itemImage');
+        const quantityEl = itemTemplate.querySelector('.quantity');
+        const [quantityLessEl, quantityMoreEl] = itemTemplate.querySelectorAll('.quantityButton');
+        
+        itemEl.id = id;
+        
+        const updateQuantity = () => {
+          quantityEl.textContent = quantity;
+          quantityLessEl.classList.toggle('disabled', quantity == 0);
+          decorateQuantity(itemEl, typeKey, quantity);
+        }
+        
+        const increaseQuantity = () => {
+          quantity++;
+          storage.write(key, quantity);
+          updateQuantity();
+        };
+        
+        const decreaseQuantity = () => {
+          if (quantity == 0) {
+            return;
+          }
+          quantity--;
+          storage.write(key, quantity);
+          updateQuantity();
+        };
+
+        imageEl.src = src;
+        quantityLessEl.onclick = decreaseQuantity;
+        quantityMoreEl.onclick = increaseQuantity;
+        updateQuantity();
+        
+        return itemTemplate;
       }
       
       function initConfig() {

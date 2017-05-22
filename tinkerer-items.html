@@ -92,6 +92,19 @@
         background-color: #AAFFAA;
       }
       
+      .rewards .progressBarContainer {
+        display: block;
+        width: 100%;
+        height: 10px;
+        background-color: #CCCCCC;
+      }
+      
+      .rewards .progressBar {
+        width: 0%; /* Initial value */
+        height: 100%;
+        background-color: #AAFFAA;
+      }
+      
       #config label {
         display: block;
         margin: 4px;
@@ -413,9 +426,11 @@
         
         const ownedItems = itemKeys.filter(key => storage.read(key) > 0).length;
         const totalItems = itemKeys.length;
+        const pct = 100 * ownedItems / totalItems;
         
         const rewardEl = document.getElementById(keys.makeRewardKey(tier));
         rewardEl.classList.toggle('complete', ownedItems == totalItems);
+        rewardEl.querySelector('.progressBar').style.width = `${pct}%`;
       }
       
       function formatFloat(number) {
@@ -466,6 +481,9 @@
     <template id="rewardsTemplate">
       <div class="rewards">
         <div class="rewardContainer"></div>
+        <div class="progressBarContainer">
+          <div class="progressBar"></div>
+        </div>
       </div>
     </template>
     

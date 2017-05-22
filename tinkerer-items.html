@@ -124,13 +124,9 @@
         WAND: 4,
         SWORD: 5,
         KATANA: 6,
-      };      
+      };
       
-      class Storage {
-        constructor() {
-          this.cache = {};
-        }
-        
+      class Keys {
         makeItemKey(tier, type, itemClass) {
           let tierKey;
           switch (tier) {
@@ -176,6 +172,12 @@
             default: throw `Invalid type: ${type}`;
           }
           return `enough-${typeKey}`;
+        }
+      }
+      
+      class Storage {
+        constructor() {
+          this.cache = {};
         }
         
         read(key, defaultValue = 0) {
@@ -268,7 +270,7 @@
         }
       }
       
-
+      const keys = new Keys();
       const storage = new Storage();
       const images = new Images();
       
@@ -287,7 +289,7 @@
           
           // Render armors.
           for (const armorType of Object.values(ArmorType)) {
-            const key = storage.makeItemKey(tier, ItemType.ARMOR, armorType);
+            const key = keys.makeItemKey(tier, ItemType.ARMOR, armorType);
             const src = images.getItemImage(tier, ItemType.ARMOR, armorType);
             
             const itemEl = renderItem(key, ItemType.ARMOR, src);
@@ -296,7 +298,7 @@
           
           // Render weapons.
           for (const weaponType of Object.values(WeaponType)) {
-            const key = storage.makeItemKey(tier, ItemType.WEAPON, weaponType);
+            const key = keys.makeItemKey(tier, ItemType.WEAPON, weaponType);
             const src = images.getItemImage(tier, ItemType.WEAPON, weaponType);
             
             const itemEl = renderItem(key, ItemType.WEAPON, src);
@@ -357,8 +359,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = storage.read(storage.makeConfigKeyEnough(ItemType.ARMOR), 2);
-        const enoughWeapon = storage.read(storage.makeConfigKeyEnough(ItemType.WEAPON), 3);
+        const enoughArmor = storage.read(keys.makeConfigKeyEnough(ItemType.ARMOR), 2);
+        const enoughWeapon = storage.read(keys.makeConfigKeyEnough(ItemType.WEAPON), 3);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');
@@ -368,12 +370,12 @@
         updateVaultSlotsConfig();
         
         enoughArmorInput.onclick = () => {
-          storage.write(storage.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
+          storage.write(keys.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
         enoughWeaponInput.onclick = () => {
-          storage.write(storage.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
+          storage.write(keys.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
         };
@@ -381,8 +383,8 @@
       
       function updateVaultSlotsConfig() {
         const vaultSlots = 3 * (
-          storage.read(storage.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
-          storage.read(storage.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
+          storage.read(keys.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
+          storage.read(keys.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
         
         const vaultChestsInput = document.getElementById('config-vault-chests');
         const vaultSlotsInput = document.getElementById('config-vault-slots');
@@ -400,7 +402,7 @@
               default: throw `Invalid type: ${type}`;
             }
             for (const itemClass of itemClasses) {
-              const key = storage.makeItemKey(tier, type, itemClass);
+              const key = keys.makeItemKey(tier, type, itemClass);
               const id = `item-${key}`;
               const itemEl = document.getElementById(id);
               decorateQuantity(itemEl, type, storage.read(key));
@@ -411,7 +413,7 @@
       
       function decorateQuantity(element, type, quantity) {
         element.classList.toggle('missing', quantity == 0);
-        element.classList.toggle('enough', quantity >= storage.read(storage.makeConfigKeyEnough(type)));
+        element.classList.toggle('enough', quantity >= storage.read(keys.makeConfigKeyEnough(type)));
       }
       
       function roundFloat(number) {

@@ -214,28 +214,26 @@
       }
       
       class Images {
-        constructor() {
-           this.rewards = {};
-           this.rewards[Tier.T7] = [
-              'https://static.drips.pw/rotmg/wiki/Consumable/Other/XP%20Booster%201%20hr.png',
-           ];
-           this.rewards[Tier.T8] = [
-              'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Tier%20Potion.png',
-              'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Drop%20Potion.png',
-           ];
-           this.rewards[Tier.T9] = [
-              'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Vitality.png',
-              'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Wisdom.png',
-           ];
-        }
-        
         getItemImage(tier, type, itemClass) {
           const imageKey = keys.makeItemImageKey(tier, type, itemClass);
           return `img/${imageKey}.png`;
         }
         
         getRewardImages(tier) {
-          return this.rewards[tier];
+          switch (tier) {
+            case Tier.T7: return [
+              'img/xp-booster-1.png',
+            ];
+            case Tier.T8: return [
+              'img/loot-tier-potion.png',
+              'img/loot-drop-potion.png',
+            ];
+            case Tier.T9: return [
+              'img/stat-pot-vit.png',
+              'img/stat-pot-wis.png',
+            ];
+            default: throw `Unknown tier: ${tier}`;
+          }
         }
       }
       

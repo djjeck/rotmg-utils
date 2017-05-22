@@ -276,9 +276,8 @@
           for (const armorType of Object.values(ArmorType)) {
             const key = storage.makeItemKey(tier, ItemType.ARMOR, armorType);
             const src = items[tier][ItemType.ARMOR][armorType];
-            const id = `item-${key}`;
             
-            const itemEl = renderItem(key, ItemType.ARMOR, src, id);
+            const itemEl = renderItem(key, ItemType.ARMOR, src);
             rowEl.appendChild(itemEl);
           }
           
@@ -286,9 +285,8 @@
           for (const weaponType of Object.values(WeaponType)) {
             const key = storage.makeItemKey(tier, ItemType.WEAPON, weaponType);
             const src = items[tier][ItemType.WEAPON][weaponType];
-            const id = `item-${key}`;
             
-            const itemEl = renderItem(key, ItemType.WEAPON, src, id);
+            const itemEl = renderItem(key, ItemType.WEAPON, src);
             rowEl.appendChild(itemEl);
           }
           
@@ -304,8 +302,9 @@
         }
       }
       
-      function renderItem(key, type, src, id) {
+      function renderItem(key, type, src) {
         let quantity = storage.read(key);
+        const id = `item-${key}`;
         
         const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
         const itemEl = itemTemplate.querySelector('.item');

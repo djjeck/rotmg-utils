@@ -201,63 +201,76 @@
         }
       }
       
+      class Images {
+        constructor() {
+           /**
+            * Armors from https://www.realmeye.com/wiki/armor
+            * Weapons from https://www.realmeye.com/wiki/weapons
+            */
+           this.items = {};
+           this.items[Tier.T7] = {};
+           this.items[Tier.T7][ItemType.ARMOR] = {};
+           this.items[Tier.T7][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T6%20Wyvern%20Skin%20Armor.png';
+           this.items[Tier.T7][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T6%20Robe%20of%20the%20Invoker.png';
+           this.items[Tier.T7][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T6%20Mithril%20Chainmail.png';
+           this.items[Tier.T7][ItemType.WEAPON] = {};
+           this.items[Tier.T7][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T7%20Mithril%20Dagger.png';
+           this.items[Tier.T7][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T7%20Heavy%20Crossbow.png';
+           this.items[Tier.T7][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T7%20Staff%20of%20Destruction.png';
+           this.items[Tier.T7][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T7%20Wand%20of%20Arcane%20Flame.png';
+           this.items[Tier.T7][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T7%20Golden%20Sword.png';
+           this.items[Tier.T7][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Buster%20Katana.png';
+           this.items[Tier.T8] = {};
+           this.items[Tier.T8][ItemType.ARMOR] = {};
+           this.items[Tier.T8][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T7%20Studded%20Leather%20Armor.png';
+           this.items[Tier.T8][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T7%20Robe%20of%20the%20Illusionist.png';
+           this.items[Tier.T8][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T7%20Mithril%20Armor.png';
+           this.items[Tier.T8][ItemType.WEAPON] = {};
+           this.items[Tier.T8][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T8%20Fire%20Dagger.png';
+           this.items[Tier.T8][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T8%20Golden%20Bow.png';
+           this.items[Tier.T8][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T8%20Staff%20of%20Horror.png';
+           this.items[Tier.T8][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T8%20Wand%20of%20Death.png';
+           this.items[Tier.T8][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T8%20Ravenheart%20Sword.png';
+           this.items[Tier.T8][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Demon%20Edge.png';
+           this.items[Tier.T9] = {};
+           this.items[Tier.T9][ItemType.ARMOR] = {};
+           this.items[Tier.T9][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T8%20Drake%20Hide%20Armor.png';
+           this.items[Tier.T9][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T8%20Robe%20of%20the%20Master.png';
+           this.items[Tier.T9][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T8%20Dragonscale%20Armor.png';
+           this.items[Tier.T9][ItemType.WEAPON] = {};
+           this.items[Tier.T9][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T9%20Ragetalon%20Dagger.png';
+           this.items[Tier.T9][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T9%20Verdant%20Bow.png';
+           this.items[Tier.T9][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T9%20Staff%20of%20Necrotic%20Arcana.png';
+           this.items[Tier.T9][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T9%20Wand%20of%20Deep%20Sorcery.png';
+           this.items[Tier.T9][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T9%20Dragonsoul%20Sword.png';
+           this.items[Tier.T9][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Jewel%20Eye%20Katana.png';
+      
+           this.rewards = {};
+           this.rewards[Tier.T7] = [
+              'https://static.drips.pw/rotmg/wiki/Consumable/Other/XP%20Booster%201%20hr.png',
+           ];
+           this.rewards[Tier.T8] = [
+              'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Tier%20Potion.png',
+              'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Drop%20Potion.png',
+           ];
+           this.rewards[Tier.T9] = [
+              'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Vitality.png',
+              'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Wisdom.png',
+           ];
+        }
+        
+        getItemImage(tier, type, itemClass) {
+          return this.items[tier][type][itemClass];
+        }
+        
+        getRewardImages(tier) {
+          return this.rewards[tier];
+        }
+      }
+      
+
       const storage = new Storage();
-      
-      /**
-       * Armors from https://www.realmeye.com/wiki/armor
-       * Weapons from https://www.realmeye.com/wiki/weapons
-       */
-      const items = {};
-      items[Tier.T7] = {};
-      items[Tier.T7][ItemType.ARMOR] = {};
-      items[Tier.T7][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T6%20Wyvern%20Skin%20Armor.png';
-      items[Tier.T7][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T6%20Robe%20of%20the%20Invoker.png';
-      items[Tier.T7][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T6%20Mithril%20Chainmail.png';
-      items[Tier.T7][ItemType.WEAPON] = {};
-      items[Tier.T7][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T7%20Mithril%20Dagger.png';
-      items[Tier.T7][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T7%20Heavy%20Crossbow.png';
-      items[Tier.T7][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T7%20Staff%20of%20Destruction.png';
-      items[Tier.T7][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T7%20Wand%20of%20Arcane%20Flame.png';
-      items[Tier.T7][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T7%20Golden%20Sword.png';
-      items[Tier.T7][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Buster%20Katana.png';
-      items[Tier.T8] = {};
-      items[Tier.T8][ItemType.ARMOR] = {};
-      items[Tier.T8][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T7%20Studded%20Leather%20Armor.png';
-      items[Tier.T8][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T7%20Robe%20of%20the%20Illusionist.png';
-      items[Tier.T8][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T7%20Mithril%20Armor.png';
-      items[Tier.T8][ItemType.WEAPON] = {};
-      items[Tier.T8][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T8%20Fire%20Dagger.png';
-      items[Tier.T8][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T8%20Golden%20Bow.png';
-      items[Tier.T8][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T8%20Staff%20of%20Horror.png';
-      items[Tier.T8][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T8%20Wand%20of%20Death.png';
-      items[Tier.T8][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T8%20Ravenheart%20Sword.png';
-      items[Tier.T8][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Demon%20Edge.png';
-      items[Tier.T9] = {};
-      items[Tier.T9][ItemType.ARMOR] = {};
-      items[Tier.T9][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T8%20Drake%20Hide%20Armor.png';
-      items[Tier.T9][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T8%20Robe%20of%20the%20Master.png';
-      items[Tier.T9][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T8%20Dragonscale%20Armor.png';
-      items[Tier.T9][ItemType.WEAPON] = {};
-      items[Tier.T9][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T9%20Ragetalon%20Dagger.png';
-      items[Tier.T9][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T9%20Verdant%20Bow.png';
-      items[Tier.T9][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T9%20Staff%20of%20Necrotic%20Arcana.png';
-      items[Tier.T9][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T9%20Wand%20of%20Deep%20Sorcery.png';
-      items[Tier.T9][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T9%20Dragonsoul%20Sword.png';
-      items[Tier.T9][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Jewel%20Eye%20Katana.png';
-      
-      const rewards = {};
-      rewards[Tier.T7] = [
-         'https://static.drips.pw/rotmg/wiki/Consumable/Other/XP%20Booster%201%20hr.png',
-      ];
-      rewards[Tier.T8] = [
-         'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Tier%20Potion.png',
-         'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Drop%20Potion.png',
-      ];
-      rewards[Tier.T9] = [
-         'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Vitality.png',
-         'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Wisdom.png',
-      ];
-      
+      const images = new Images();
       
       function bodyLoad() {
         // Initialize config first, for defaults.
@@ -275,7 +288,7 @@
           // Render armors.
           for (const armorType of Object.values(ArmorType)) {
             const key = storage.makeItemKey(tier, ItemType.ARMOR, armorType);
-            const src = items[tier][ItemType.ARMOR][armorType];
+            const src = images.getItemImage(tier, ItemType.ARMOR, armorType);
             
             const itemEl = renderItem(key, ItemType.ARMOR, src);
             rowEl.appendChild(itemEl);
@@ -284,14 +297,14 @@
           // Render weapons.
           for (const weaponType of Object.values(WeaponType)) {
             const key = storage.makeItemKey(tier, ItemType.WEAPON, weaponType);
-            const src = items[tier][ItemType.WEAPON][weaponType];
+            const src = images.getItemImage(tier, ItemType.WEAPON, weaponType);
             
             const itemEl = renderItem(key, ItemType.WEAPON, src);
             rowEl.appendChild(itemEl);
           }
           
           // Render rewards.
-          for (const reward of rewards[tier]) {
+          for (const reward of images.getRewardImages(tier)) {
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward;

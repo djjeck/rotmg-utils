@@ -100,9 +100,26 @@
       }
     </style>
     <script type="text/javascript">
+      const Tier = {
+        T7: 7,
+        T8: 8,
+        T9: 9,
+      };
+      
       class Storage {
         constructor() {
           this.cache = {};
+        }
+        
+        makeItemKey(tier, typeKey, classKey) {
+          let tierKey;
+          switch (tier) {
+            case Tier.T7: tierKey = 't7'; break;
+            case Tier.T8: tierKey = 't8'; break;
+            case Tier.T9: tierKey = 't9'; break;
+            default: throw `Invalid tier: ${tier}`;
+          }
+          return `quantity-${tierKey}-${typeKey}-${classKey}`;
         }
         
         read(key, defaultValue = 0) {
@@ -127,12 +144,6 @@
           localStorage.setItem(key, value);
         }
       }
-      
-      const Tier = {
-        T7: 7,
-        T8: 8,
-        T9: 9,
-      };
       
       const storage = new Storage();
       
@@ -208,21 +219,15 @@
         const contentEl = document.getElementById('content');
         
         for (const tier of Object.values(Tier)) {
-          const tierKey =
-              tier == Tier.T7 ? 't7' :
-              tier == Tier.T8 ? 't8' :
-              tier == Tier.T9 ? 't9' :
-              '??';
-          
           const rowEl = document.createElement('div');
           rowEl.className = 'row';
           
           // Render items
           for (const typeKey of ['armors', 'weapons']) {
             for (const classKey in items[tier][typeKey]) {
-              const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
+              const key = storage.makeItemKey(tier, typeKey, classKey);
               const src = items[tier][typeKey][classKey];
-              const id = `item-${tierKey}-${typeKey}-${classKey}`;
+              const id = `item-${key}`;
               
               const itemEl = renderItem(key, typeKey, src, id);
               rowEl.appendChild(itemEl);
@@ -272,7 +277,7 @@
           storage.write(key, quantity);
           updateQuantity();
         };
-
+        
         imageEl.src = src;
         quantityLessEl.onclick = decreaseQuantity;
         quantityMoreEl.onclick = increaseQuantity;
@@ -318,13 +323,8 @@
       function decorateQuantities(typeKey) {
         for (const tier in items) {
           for (const classKey in items[tier][typeKey]) {
-            const tierKey =
-                tier == Tier.T7 ? 't7' :
-                tier == Tier.T8 ? 't8' :
-                tier == Tier.T9 ? 't9' :
-                '??';
-            const key = `quantity-${tierKey}-${typeKey}-${classKey}`;
-            const id = `item-${tierKey}-${typeKey}-${classKey}`;
+            const key = storage.makeItemKey(tier, typeKey, classKey);
+            const id = `item-${key}`;
             const itemEl = document.getElementById(id);
             decorateQuantity(itemEl, typeKey, storage.read(key))
           }

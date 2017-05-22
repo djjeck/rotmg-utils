@@ -82,6 +82,16 @@
         opacity: 0.3;
       }
       
+      .rewards {
+        margin: 10px;
+        display: inline-block;
+        box-shadow: 0px 0px 5px black;
+      }
+      
+      .rewards.complete {
+        background-color: #AAFFAA;
+      }
+      
       #config label {
         display: block;
         margin: 4px;
@@ -127,14 +137,18 @@
       };
       
       class Keys {
-        makeItemKey(tier, type, itemClass) {
+        getTierKey(tier) {
           let tierKey;
           switch (tier) {
-            case Tier.T7: tierKey = 't7'; break;
-            case Tier.T8: tierKey = 't8'; break;
-            case Tier.T9: tierKey = 't9'; break;
+            case Tier.T7: return 't7';
+            case Tier.T8: return 't8';
+            case Tier.T9: return 't9';
             default: throw `Invalid tier: ${tier}`;
           }
+        }
+        
+        makeItemKey(tier, type, itemClass) {
+          const tierKey = this.getTierKey(tier);
           let typeKey;
           let classKey;
           switch (type) {
@@ -172,6 +186,11 @@
         makeItemQuantityKey(tier, type, itemClass) {
           const itemKey = this.makeItemKey(tier, type, itemClass);
           return `quantity-${itemKey}`;
+        }
+        
+        makeRewardKey(tier) {
+          const tierKey = this.getTierKey(tier);
+          return `reward-${tierKey}`;
         }
         
         makeConfigKeyEnough(type) {
@@ -265,14 +284,19 @@
           }
           
           // Render rewards.
+          const rewardEl = document.createElement('div');
+          rewardEl.id = keys.makeRewardKey(tier);
+          rewardEl.className = 'rewards';
           for (const reward of images.getRewardImages(tier)) {
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward;
-            rowEl.appendChild(imageEl);
+            rewardEl.appendChild(imageEl);
           }
+          rowEl.appendChild(rewardEl);
           
           contentEl.appendChild(rowEl);
+          decorateRewards(tier);
         }
       }
       
@@ -299,6 +323,7 @@
         const increaseQuantity = () => {
           quantity++;
           storage.write(key, quantity);
+          decorateRewards(tier);
           updateQuantity();
         };
         
@@ -308,6 +333,7 @@
           }
           quantity--;
           storage.write(key, quantity);
+          decorateRewards(tier);
           updateQuantity();
         };
         
@@ -349,7 +375,7 @@
         
         const vaultChestsInput = document.getElementById('config-vault-chests');
         const vaultSlotsInput = document.getElementById('config-vault-slots');
-        vaultChestsInput.value = roundFloat(vaultSlots / 8);
+        vaultChestsInput.value = formatFloat(vaultSlots / 8);
         vaultSlotsInput.value = vaultSlots;
       }
       
@@ -377,7 +403,20 @@
         element.classList.toggle('enough', quantity >= storage.read(keys.makeConfigKeyEnough(type)));
       }
       
-      function roundFloat(number) {
+      function decorateRewards(tier) {
+        const itemKeys = [
+          ...Object.values(ArmorType).map(armorType => keys.makeItemQuantityKey(tier, ItemType.ARMOR, armorType)),
+          ...Object.values(WeaponType).map(weaponType => keys.makeItemQuantityKey(tier, ItemType.WEAPON, weaponType))
+        ];
+        
+        const ownedItems = itemKeys.filter(key => storage.read(key) > 0).length;
+        const totalItems = itemKeys.length;
+        
+        const rewardEl = document.getElementById(keys.makeRewardKey(tier));
+        rewardEl.classList.toggle('complete', ownedItems == totalItems);
+      }
+      
+      function formatFloat(number) {
         return Math.floor(number * 100) / 100;
       }
     </script>

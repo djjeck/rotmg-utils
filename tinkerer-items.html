@@ -284,18 +284,20 @@
           }
           
           // Render rewards.
-          const rewardEl = document.createElement('div');
-          rewardEl.id = keys.makeRewardKey(tier);
-          rewardEl.className = 'rewards';
+          const rewardsTemplate = document.importNode(document.querySelector('#rewardsTemplate').content, true);
+          const rewardsEl = rewardsTemplate.querySelector('.rewards');
+          rewardsEl.id = keys.makeRewardKey(tier);
+          const rewardContainer = rewardsTemplate.querySelector('.rewardContainer');
           for (const reward of images.getRewardImages(tier)) {
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward;
-            rewardEl.appendChild(imageEl);
+            rewardContainer.appendChild(rewardTemplate);
           }
-          rowEl.appendChild(rewardEl);
+          rowEl.appendChild(rewardsEl);
           
           contentEl.appendChild(rowEl);
+          
           decorateRewards(tier);
         }
       }
@@ -342,7 +344,7 @@
         quantityMoreEl.onclick = increaseQuantity;
         updateQuantity();
         
-        return itemTemplate;
+        return itemEl;
       }
       
       function initConfig() {
@@ -458,6 +460,12 @@
           <!-- White Up-Pointing Triangle https://unicode-table.com/en/25B3/ -->
           <span class="quantityButton">&#x25B3;</span>
         </div>
+      </div>
+    </template>
+    
+    <template id="rewardsTemplate">
+      <div class="rewards">
+        <div class="rewardContainer"></div>
       </div>
     </template>
     

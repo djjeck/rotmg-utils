@@ -106,12 +106,32 @@
         T9: 9,
       };
       
+      const ItemType = {
+        ARMOR: 1,
+        WEAPON: 2,
+      };
+      
+      const ArmorType = {
+        LEATHER: 1,
+        ROBE: 2,
+        HEAVY: 3,
+      };
+      
+      const WeaponType = {
+        DAGGER: 1,
+        BOW: 2,
+        STAFF: 3,
+        WAND: 4,
+        SWORD: 5,
+        KATANA: 6,
+      };      
+      
       class Storage {
         constructor() {
           this.cache = {};
         }
         
-        makeItemKey(tier, typeKey, classKey) {
+        makeItemKey(tier, type, itemClass) {
           let tierKey;
           switch (tier) {
             case Tier.T7: tierKey = 't7'; break;
@@ -119,7 +139,43 @@
             case Tier.T9: tierKey = 't9'; break;
             default: throw `Invalid tier: ${tier}`;
           }
+          let typeKey;
+          let classKey;
+          switch (type) {
+            case ItemType.ARMOR:
+              typeKey = 'armors';
+              switch (itemClass) {
+                case ArmorType.LEATHER: classKey = 'leather'; break;
+                case ArmorType.ROBE: classKey = 'robe'; break;
+                case ArmorType.HEAVY: classKey = 'heavy'; break;
+                default: throw `Invalid armor class: ${itemClass}`;
+              }
+              break;
+            case ItemType.WEAPON:
+              typeKey = 'weapons';
+              switch (itemClass) {
+                case WeaponType.DAGGER: classKey = 'dagger'; break;
+                case WeaponType.BOW: classKey = 'bow'; break;
+                case WeaponType.STAFF: classKey = 'staff'; break;
+                case WeaponType.WAND: classKey = 'wand'; break;
+                case WeaponType.SWORD: classKey = 'sword'; break;
+                case WeaponType.KATANA: classKey = 'katana'; break;
+                default: throw `Invalid armor class: ${itemClass}`;
+              }
+              break;
+            default: throw `Invalid type: ${type}`;
+          }
           return `quantity-${tierKey}-${typeKey}-${classKey}`;
+        }
+        
+        makeConfigKeyEnough(type) {
+          let typeKey;
+          switch (type) {
+            case ItemType.ARMOR: typeKey = 'armors'; break;
+            case ItemType.WEAPON: typeKey = 'weapons'; break;
+            default: throw `Invalid type: ${type}`;
+          }
+          return `enough-${typeKey}`;
         }
         
         read(key, defaultValue = 0) {
@@ -152,62 +208,56 @@
        * Weapons from https://www.realmeye.com/wiki/weapons
        */
       const items = {};
-      items[Tier.T7] = {
-        armors: {
-          leather: 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T6%20Wyvern%20Skin%20Armor.png',
-          robe: 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T6%20Robe%20of%20the%20Invoker.png',
-          heavy: 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T6%20Mithril%20Chainmail.png',
-        },
-        weapons: {
-          dagger: 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T7%20Mithril%20Dagger.png',
-          bow: 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T7%20Heavy%20Crossbow.png',
-          staff: 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T7%20Staff%20of%20Destruction.png',
-          wand: 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T7%20Wand%20of%20Arcane%20Flame.png',
-          sword: 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T7%20Golden%20Sword.png',
-          katana: 'https://www.realmeye.com/s/a/img/wiki/Buster%20Katana.png',
-        },
-        rewards: [
-          'https://static.drips.pw/rotmg/wiki/Consumable/Other/XP%20Booster%201%20hr.png',
-        ],
-      };
-      items[Tier.T8] = {
-        armors: {
-          leather: 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T7%20Studded%20Leather%20Armor.png',
-          robe: 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T7%20Robe%20of%20the%20Illusionist.png',
-          heavy: 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T7%20Mithril%20Armor.png',
-        },
-        weapons: {
-          dagger: 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T8%20Fire%20Dagger.png',
-          bow: 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T8%20Golden%20Bow.png',
-          staff: 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T8%20Staff%20of%20Horror.png',
-          wand: 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T8%20Wand%20of%20Death.png',
-          sword: 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T8%20Ravenheart%20Sword.png',
-          katana: 'https://www.realmeye.com/s/a/img/wiki/Demon%20Edge.png',
-        },
-        rewards: [
-          'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Tier%20Potion.png',
-          'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Drop%20Potion.png',
-        ],
-      };
-      items[Tier.T9] = {
-        armors: {
-          leather: 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T8%20Drake%20Hide%20Armor.png',
-          robe: 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T8%20Robe%20of%20the%20Master.png',
-          heavy: 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T8%20Dragonscale%20Armor.png',
-        },
-        weapons: {
-          dagger: 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T9%20Ragetalon%20Dagger.png',
-          bow: 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T9%20Verdant%20Bow.png',
-          staff: 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T9%20Staff%20of%20Necrotic%20Arcana.png',
-          wand: 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T9%20Wand%20of%20Deep%20Sorcery.png',
-          sword: 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T9%20Dragonsoul%20Sword.png',
-          katana: 'https://www.realmeye.com/s/a/img/wiki/Jewel%20Eye%20Katana.png',
-        },
-        rewards: [
-          'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Vitality.png',
-          'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Wisdom.png',
-        ],
-      };
+      items[Tier.T7] = {};
+      items[Tier.T7][ItemType.ARMOR] = {};
+      items[Tier.T7][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T6%20Wyvern%20Skin%20Armor.png';
+      items[Tier.T7][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T6%20Robe%20of%20the%20Invoker.png';
+      items[Tier.T7][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T6%20Mithril%20Chainmail.png';
+      items[Tier.T7][ItemType.WEAPON] = {};
+      items[Tier.T7][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T7%20Mithril%20Dagger.png';
+      items[Tier.T7][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T7%20Heavy%20Crossbow.png';
+      items[Tier.T7][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T7%20Staff%20of%20Destruction.png';
+      items[Tier.T7][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T7%20Wand%20of%20Arcane%20Flame.png';
+      items[Tier.T7][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T7%20Golden%20Sword.png';
+      items[Tier.T7][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Buster%20Katana.png';
+      items[Tier.T8] = {};
+      items[Tier.T8][ItemType.ARMOR] = {};
+      items[Tier.T8][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T7%20Studded%20Leather%20Armor.png';
+      items[Tier.T8][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T7%20Robe%20of%20the%20Illusionist.png';
+      items[Tier.T8][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T7%20Mithril%20Armor.png';
+      items[Tier.T8][ItemType.WEAPON] = {};
+      items[Tier.T8][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T8%20Fire%20Dagger.png';
+      items[Tier.T8][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T8%20Golden%20Bow.png';
+      items[Tier.T8][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T8%20Staff%20of%20Horror.png';
+      items[Tier.T8][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T8%20Wand%20of%20Death.png';
+      items[Tier.T8][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T8%20Ravenheart%20Sword.png';
+      items[Tier.T8][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Demon%20Edge.png';
+      items[Tier.T9] = {};
+      items[Tier.T9][ItemType.ARMOR] = {};
+      items[Tier.T9][ItemType.ARMOR][ArmorType.LEATHER] = 'https://static.drips.pw/rotmg/wiki/Armor/Leather%20Armor/T8%20Drake%20Hide%20Armor.png';
+      items[Tier.T9][ItemType.ARMOR][ArmorType.ROBE] = 'https://static.drips.pw/rotmg/wiki/Armor/Robes/T8%20Robe%20of%20the%20Master.png';
+      items[Tier.T9][ItemType.ARMOR][ArmorType.HEAVY] = 'https://static.drips.pw/rotmg/wiki/Armor/Heavy%20Armor/T8%20Dragonscale%20Armor.png';
+      items[Tier.T9][ItemType.WEAPON] = {};
+      items[Tier.T9][ItemType.WEAPON][WeaponType.DAGGER] = 'https://static.drips.pw/rotmg/wiki/Weapons/Daggers/T9%20Ragetalon%20Dagger.png';
+      items[Tier.T9][ItemType.WEAPON][WeaponType.BOW] = 'https://static.drips.pw/rotmg/wiki/Weapons/Bows/T9%20Verdant%20Bow.png';
+      items[Tier.T9][ItemType.WEAPON][WeaponType.STAFF] = 'https://static.drips.pw/rotmg/wiki/Weapons/Staves/T9%20Staff%20of%20Necrotic%20Arcana.png';
+      items[Tier.T9][ItemType.WEAPON][WeaponType.WAND] = 'https://static.drips.pw/rotmg/wiki/Weapons/Wands/T9%20Wand%20of%20Deep%20Sorcery.png';
+      items[Tier.T9][ItemType.WEAPON][WeaponType.SWORD] = 'https://static.drips.pw/rotmg/wiki/Weapons/Swords/T9%20Dragonsoul%20Sword.png';
+      items[Tier.T9][ItemType.WEAPON][WeaponType.KATANA] = 'https://www.realmeye.com/s/a/img/wiki/Jewel%20Eye%20Katana.png';
+      
+      const rewards = {};
+      rewards[Tier.T7] = [
+         'https://static.drips.pw/rotmg/wiki/Consumable/Other/XP%20Booster%201%20hr.png',
+      ];
+      rewards[Tier.T8] = [
+         'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Tier%20Potion.png',
+         'https://static.drips.pw/rotmg/wiki/Consumable/Other/Loot%20Drop%20Potion.png',
+      ];
+      rewards[Tier.T9] = [
+         'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Vitality.png',
+         'https://static.drips.pw/rotmg/wiki/Consumable/Stat%20Potions/Potion%20of%20Wisdom.png',
+      ];
+      
       
       function bodyLoad() {
         // Initialize config first, for defaults.
@@ -222,20 +272,28 @@
           const rowEl = document.createElement('div');
           rowEl.className = 'row';
           
-          // Render items
-          for (const typeKey of ['armors', 'weapons']) {
-            for (const classKey in items[tier][typeKey]) {
-              const key = storage.makeItemKey(tier, typeKey, classKey);
-              const src = items[tier][typeKey][classKey];
-              const id = `item-${key}`;
-              
-              const itemEl = renderItem(key, typeKey, src, id);
-              rowEl.appendChild(itemEl);
-            }
+          // Render armors.
+          for (const armorType of Object.values(ArmorType)) {
+            const key = storage.makeItemKey(tier, ItemType.ARMOR, armorType);
+            const src = items[tier][ItemType.ARMOR][armorType];
+            const id = `item-${key}`;
+            
+            const itemEl = renderItem(key, ItemType.ARMOR, src, id);
+            rowEl.appendChild(itemEl);
           }
           
-          // Render rewards
-          for (const reward of items[tier]['rewards']) {
+          // Render weapons.
+          for (const weaponType of Object.values(WeaponType)) {
+            const key = storage.makeItemKey(tier, ItemType.WEAPON, weaponType);
+            const src = items[tier][ItemType.WEAPON][weaponType];
+            const id = `item-${key}`;
+            
+            const itemEl = renderItem(key, ItemType.WEAPON, src, id);
+            rowEl.appendChild(itemEl);
+          }
+          
+          // Render rewards.
+          for (const reward of rewards[tier]) {
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward;
@@ -246,7 +304,7 @@
         }
       }
       
-      function renderItem(key, typeKey, src, id) {
+      function renderItem(key, type, src, id) {
         let quantity = storage.read(key);
         
         const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
@@ -260,7 +318,7 @@
         const updateQuantity = () => {
           quantityEl.textContent = quantity;
           quantityLessEl.classList.toggle('disabled', quantity == 0);
-          decorateQuantity(itemEl, typeKey, quantity);
+          decorateQuantity(itemEl, type, quantity);
         }
         
         const increaseQuantity = () => {
@@ -287,8 +345,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = storage.read('enough-armors', 2);
-        const enoughWeapon = storage.read('enough-weapons', 3);
+        const enoughArmor = storage.read(storage.makeConfigKeyEnough(ItemType.ARMOR), 2);
+        const enoughWeapon = storage.read(storage.makeConfigKeyEnough(ItemType.WEAPON), 3);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');
@@ -298,12 +356,12 @@
         updateVaultSlotsConfig();
         
         enoughArmorInput.onclick = () => {
-          storage.write('enough-armors', enoughArmorInput.value);
+          storage.write(storage.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
         enoughWeaponInput.onclick = () => {
-          storage.write('enough-weapons', enoughWeaponInput.value);
+          storage.write(storage.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
         };
@@ -311,8 +369,8 @@
       
       function updateVaultSlotsConfig() {
         const vaultSlots = 3 * (
-          storage.read('enough-armors') * 3 +
-          storage.read('enough-weapons') * 6);
+          storage.read(storage.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
+          storage.read(storage.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
         
         const vaultChestsInput = document.getElementById('config-vault-chests');
         const vaultSlotsInput = document.getElementById('config-vault-slots');
@@ -320,20 +378,28 @@
         vaultSlotsInput.value = vaultSlots;
       }
       
-      function decorateQuantities(typeKey) {
-        for (const tier in items) {
-          for (const classKey in items[tier][typeKey]) {
-            const key = storage.makeItemKey(tier, typeKey, classKey);
-            const id = `item-${key}`;
-            const itemEl = document.getElementById(id);
-            decorateQuantity(itemEl, typeKey, storage.read(key))
+      function decorateQuantities(type) {
+        for (const tier of Object.values(Tier)) {
+          for (const type of Object.values(ItemType)) {
+            let itemClasses;
+            switch (type) {
+              case ItemType.ARMOR: itemClasses = Object.values(ArmorType); break;
+              case ItemType.WEAPON: itemClasses = Object.values(WeaponType); break;
+              default: throw `Invalid type: ${type}`;
+            }
+            for (const itemClass of itemClasses) {
+              const key = storage.makeItemKey(tier, type, itemClass);
+              const id = `item-${key}`;
+              const itemEl = document.getElementById(id);
+              decorateQuantity(itemEl, type, storage.read(key));
+            }
           }
         }
       }
       
       function decorateQuantity(element, type, quantity) {
         element.classList.toggle('missing', quantity == 0);
-        element.classList.toggle('enough', quantity >= storage.read(`enough-${type}`));     
+        element.classList.toggle('enough', quantity >= storage.read(storage.makeConfigKeyEnough(type)));
       }
       
       function roundFloat(number) {

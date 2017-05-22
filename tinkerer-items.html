@@ -256,20 +256,12 @@
           
           // Render armors.
           for (const armorType of Object.values(ArmorType)) {
-            const key = keys.makeItemQuantityKey(tier, ItemType.ARMOR, armorType);
-            const src = images.getItemImage(tier, ItemType.ARMOR, armorType);
-            
-            const itemEl = renderItem(key, ItemType.ARMOR, src);
-            rowEl.appendChild(itemEl);
+            rowEl.appendChild(renderItem(tier, ItemType.ARMOR, armorType));
           }
           
           // Render weapons.
           for (const weaponType of Object.values(WeaponType)) {
-            const key = keys.makeItemQuantityKey(tier, ItemType.WEAPON, weaponType);
-            const src = images.getItemImage(tier, ItemType.WEAPON, weaponType);
-            
-            const itemEl = renderItem(key, ItemType.WEAPON, src);
-            rowEl.appendChild(itemEl);
+            rowEl.appendChild(renderItem(tier, ItemType.WEAPON, weaponType));
           }
           
           // Render rewards.
@@ -284,7 +276,9 @@
         }
       }
       
-      function renderItem(key, type, src) {
+      function renderItem(tier, type, itemClass) {
+        const key = keys.makeItemQuantityKey(tier, type, itemClass);
+        const src = images.getItemImage(tier, type, itemClass);
         let quantity = storage.read(key);
         const id = `item-${key}`;
         

@@ -305,22 +305,29 @@
             a.click();
             setTimeout(() => {
               document.body.removeChild(a);
-              URL.revokeObjectURL(url);  
+              URL.revokeObjectURL(url);
             }, 0);
           }
         };
         
-        importButton.onchange = e => {
-          const file = e.target.files[0];
-          const reader = new FileReader();
-          reader.onload = e => {
-            // TODO make sure the file actually is a cache dump.
-            storage.importCache(e.target.result);
-            console.log('Data imported successfully');
-            // Refresh the whole page, i.e. the lazy way.
-            window.location.reload();
+        importButton.onclick = () => {
+          const input = document.createElement('input');
+          input.type = 'file';
+          input.style.display = 'none';
+          input.onchange = e => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = e => {
+              // TODO make sure the file actually is a cache dump.
+              storage.importCache(e.target.result);
+              console.log('Data imported successfully');
+              // Refresh the whole page, i.e. the lazy way.
+              window.location.reload();
+            };
+            reader.readAsText(file);
           };
-          reader.readAsText(file);
+          document.body.appendChild(input);
+          input.click();
         };
         
         document.getElementById('exportContainer').appendChild(exportEl);
@@ -451,7 +458,7 @@
     <template id="exportTemplate">
       <div id="export">
         <button id="exportButton">Export</button>
-        <input type="file" id="importButton" />
+        <button id="importButton">Import</button>
       </div>
     </template>
 

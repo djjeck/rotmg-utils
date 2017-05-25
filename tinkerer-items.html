@@ -275,7 +275,8 @@
         
         const exportTemplate = document.importNode(document.querySelector('#exportTemplate').content, true);
         const exportEl = exportTemplate.querySelector('#export');
-        exportEl.onclick = () => {
+        const exportButton = exportTemplate.querySelector('#exportButton');
+        exportButton.onclick = () => {
           // Assuming all necessary values have been read once.
           const cache = storage.dumpCache();
           

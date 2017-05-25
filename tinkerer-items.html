@@ -126,6 +126,14 @@
         dumpCache() {
           return JSON.stringify(this.cache, null, '  ');
         }
+        
+        importCache(json) {
+          this.cache = JSON.parse(json);
+          // Assuming no values need to be deleted.
+          for (const key in this.cache) {
+            this.write(key, this.cache[key]);
+          }
+        }
       }
       
       class Images {
@@ -268,7 +276,7 @@
       }
       
       function initExport() {
-        if (!Blob) {
+        if (!Blob || !FileReader) {
           console.log('Exporting to a file is not supported');
           return;
         }
@@ -276,6 +284,8 @@
         const exportTemplate = document.importNode(document.querySelector('#exportTemplate').content, true);
         const exportEl = exportTemplate.querySelector('#export');
         const exportButton = exportTemplate.querySelector('#exportButton');
+        const importButton = exportTemplate.querySelector('#importButton');
+        
         exportButton.onclick = () => {
           // Assuming all necessary values have been read once.
           const cache = storage.dumpCache();
@@ -299,6 +309,20 @@
             }, 0);
           }
         };
+        
+        importButton.onchange = e => {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = e => {
+            // TODO make sure the file actually is a cache dump.
+            storage.importCache(e.target.result);
+            console.log('Data imported successfully');
+            // Refresh the whole page, i.e. the lazy way.
+            window.location.reload();
+          };
+          reader.readAsText(file);
+        };
+        
         document.getElementById('exportContainer').appendChild(exportEl);
       }
       
@@ -427,6 +451,7 @@
     <template id="exportTemplate">
       <div id="export">
         <button id="exportButton">Export</button>
+        <input type="file" id="importButton" />
       </div>
     </template>
 

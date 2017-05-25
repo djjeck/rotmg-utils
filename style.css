@@ -12,7 +12,8 @@ body {
 }
 
 #content,
-#config {
+#config,
+#export {
   display: block;
   margin: 20px auto;
   width: auto;
@@ -117,4 +118,14 @@ body {
   width: 60px;
   padding: 3px 2px;
   text-align: right;
+}
+
+#export button {
+  padding: 3px 10px;
+  background-color: #FFFFFF;
+  cursor: pointer;
+}
+
+#export button:hover {
+  background-color: #AAFFAA;
 }

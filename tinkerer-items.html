@@ -122,6 +122,10 @@
           this.cache[key] = value;
           localStorage.setItem(key, value);
         }
+        
+        dumpCache() {
+          return JSON.stringify(this.cache, null, '  ');
+        }
       }
       
       class Images {
@@ -156,6 +160,7 @@
         // Initialize config first, for defaults.
         initConfig();
         render();
+        initExport();
       }
       
       function render() {
@@ -262,6 +267,40 @@
         };
       }
       
+      function initExport() {
+        if (!Blob) {
+          console.log('Exporting to a file is not supported');
+          return;
+        }
+        
+        const exportTemplate = document.importNode(document.querySelector('#exportTemplate').content, true);
+        const exportEl = exportTemplate.querySelector('#export');
+        exportEl.onclick = () => {
+          // Assuming all necessary values have been read once.
+          const cache = storage.dumpCache();
+          
+          // Adapted from https://stackoverflow.com/a/30832210.
+          const file = new Blob([cache], {type: 'text/plain'});
+          const filename = 'tinkerer-items.json';
+          
+          if (navigator.msSaveOrOpenBlob) { // IE10+
+            navigator.msSaveOrOpenBlob(file, filename);
+          } else {
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);  
+            }, 0);
+          }
+        };
+        document.getElementById('exportContainer').appendChild(exportEl);
+      }
+      
       function updateVaultSlotsConfig() {
         const vaultSlots = 3 * (
           storage.read(keys.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
@@ -355,6 +394,8 @@
         <input id="config-vault-slots" type="number" min="1" max="640" disabled="disabled" />
       </label>
     </div>
+    <div id="exportContainer">
+    </div>
     
     <template id="itemTemplate">
       <div class="item">
@@ -380,6 +421,12 @@
     
     <template id="rewardTemplate">
       <img class="sprite rewardImage" />
+    </template>
+    
+    <template id="exportTemplate">
+      <div id="export">
+        <button id="exportButton">Export</button>
+      </div>
     </template>
 
     <!-- Fork me on GitHub ribbon, from https://github.com/blog/273-github-ribbons -->

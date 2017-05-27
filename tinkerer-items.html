@@ -163,14 +163,17 @@
         }
         
         dumpCache() {
-          return JSON.stringify(this.cache, null, '  ');
+          // Clone cache.
+          return Object.assign({}, this.cache);
         }
         
         importCache(json) {
           this.cache = JSON.parse(json);
           // Assuming no values need to be deleted.
           for (const key in this.cache) {
-            this.writeString(key, this.cache[key]);
+            if (!key.startsWith('_')) { // Skip "comment" values.
+              this.writeString(key, this.cache[key]);
+            }
           }
         }
       }
@@ -329,9 +332,11 @@
         exportButton.onclick = () => {
           // Assuming all necessary values have been read once.
           const cache = storage.dumpCache();
+          cache['_exported-from'] = 'http://www.djjeck.com/projects/rotmg/tinkerer-items.html';
+          cache['_exported-on'] = new Date().toISOString();
           
           // Adapted from https://stackoverflow.com/a/30832210.
-          const file = new Blob([cache], {type: 'text/plain'});
+          const file = new Blob([JSON.stringify(cache, null, '  ')], {type: 'text/plain'});
           const filename = 'tinkerer-items.json';
           
           if (navigator.msSaveOrOpenBlob) { // IE10+

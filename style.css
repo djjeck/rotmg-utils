@@ -142,3 +142,8 @@ body {
 #export button:hover {
   background-color: var(--color-green);
 }
+
+#footer {
+  font-size: 0.7em;
+  text-align: right;
+}

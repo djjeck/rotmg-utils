@@ -1,4 +1,7 @@
 body {
+  --color-red: #FFAAAA;
+  --color-green: #AAFFAA;
+  
   --sprite-size: 64px;
   --item-image-margin: 5px;
   
@@ -38,11 +41,11 @@ body {
 }
 
 .item.missing {
-  background-color: #FFAAAA;
+  background-color: var(--color-red);
 }
 
 .item.enough {
-  background-color: #AAFFAA;
+  background-color: var(--color-green);
 }
 
 .item.enough .itemImage {
@@ -87,7 +90,7 @@ body {
 }
 
 .rewards.complete {
-  background-color: #AAFFAA;
+  background-color: var(--color-green);
 }
 
 .rewards .progressBarContainer {
@@ -100,7 +103,7 @@ body {
 .rewards .progressBar {
   width: 0%; /* Initial value */
   height: 100%;
-  background-color: #AAFFAA;
+  background-color: var(--color-green);
 }
 
 #config label {
@@ -130,5 +133,5 @@ body {
 }
 
 #export button:hover {
-  background-color: #AAFFAA;
+  background-color: var(--color-green);
 }

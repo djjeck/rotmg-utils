@@ -2,6 +2,30 @@
   <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript">
+      const LogLevel = {
+        DEBUG: 1,
+        INFO: 2,
+        WARNING: 3,
+        ERROR: 4,
+      };
+      
+      class Logger {
+        constructor() {
+          this.logLevel = LogLevel.INFO;
+        }
+        
+        setLogLevel(level) {
+          this.logLevel = level;
+        }
+        
+        log(level, message) {
+          if (level >= this.logLevel) {
+            console.log(message);
+          }
+        }
+      }
+    </script>
+    <script type="text/javascript">
       const Tier = {
         T7: 7,
         T8: 8,
@@ -123,36 +147,41 @@
           defaultValue += '';
           
           if (key in this.cache) {
-            console.log(`reading ${key} -> ${this.cache[key]} (cached)`);
+            logger.log(LogLevel.DEBUG, `reading ${key} -> ${this.cache[key]} (cached)`);
             return this.cache[key];
           }
           const value = localStorage.getItem(key);
           if (value === null) {
-            console.log(`setting default for ${key} <- ${defaultValue}`);
+            logger.log(LogLevel.DEBUG, `setting default for ${key} <- ${defaultValue}`);
             this.writeString(key, defaultValue);
             return defaultValue;
           }
           this.cache[key] = value;
-          console.log(`reading ${key} -> ${value}`);
+          logger.log(LogLevel.DEBUG, `reading ${key} -> ${value}`);
           return value;          
         }
         
         writeString(key, value) {
           value += '';
           
-          if (key == 'use-google-analytics' && value == 'true') {
-            // Do not store the default value of this special flag into the storage.
-            // This reduces the discoverability of the flag, for example
-            // from the exported files. This flag is really only meant for
-            // excluding myself (djjeck) from Google Analytics.
+          // Do not store the default value of these special flags into the storage.
+          // This reduces the discoverability of the flags, for example from the
+          // exported files. 
+          if (
+            (key == 'log-level' && value == 'INFO') ||
+            // This flag is really only meant for excluding myself (djjeck)
+            // from Google Analytics.
             // If you're reading this comment and found out about the flag,
             // feel free to enable it, in order to use this tool without
             // leaving a trace. Just remember that the more users in
             // Google Analytics I see, the happier I am.
+            (key == 'use-google-analytics' && value == 'true')
+          ) {
+            localStorage.removeItem(key);
             return;
           }
           
-          console.log(`writing ${key} <- ${value}`);
+          logger.log(LogLevel.DEBUG, `writing ${key} <- ${value}`);
           this.cache[key] = value;
           localStorage.setItem(key, value);
         }
@@ -202,9 +231,12 @@
         }
       }
       
+      const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
       const images = new Images();
+      
+      logger.setLogLevel(LogLevel[storage.readString('log-level', 'INFO')]);
       
       function bodyLoad() {
         // Initialize config first, for defaults.
@@ -319,7 +351,7 @@
       
       function initExport() {
         if (!Blob || !FileReader) {
-          console.log('Exporting to a file is not supported');
+          logger.log(LogLevel.WARNING, 'Exporting to a file is not supported');
           return;
         }
         
@@ -343,6 +375,7 @@
           
           if (navigator.msSaveOrOpenBlob) { // IE10+
             navigator.msSaveOrOpenBlob(file, filename);
+            logger.log(LogLevel.INFO, 'Data exported successfully');
           } else {
             const url = URL.createObjectURL(file);
             const a = document.createElement('a');
@@ -350,6 +383,7 @@
             a.download = filename;
             document.body.appendChild(a);
             a.click();
+            logger.log(LogLevel.INFO, 'Data exported successfully');
             setTimeout(() => {
               document.body.removeChild(a);
               URL.revokeObjectURL(url);
@@ -367,7 +401,7 @@
             reader.onload = e => {
               // TODO make sure the file actually is a cache dump.
               storage.importCache(e.target.result);
-              console.log('Data imported successfully');
+              logger.log(LogLevel.INFO, 'Data imported successfully');
               // Refresh the whole page, i.e. the lazy way.
               window.location.reload();
             };

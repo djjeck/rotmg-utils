@@ -332,6 +332,8 @@
         exportButton.onclick = () => {
           // Assuming all necessary values have been read once.
           const cache = storage.dumpCache();
+          // Comments are not allowed in JSON. Using properties prefixed with _ (they go at the end).
+          cache['_'] = ''; // Just a spacer.
           cache['_exported-from'] = 'http://www.djjeck.com/projects/rotmg/tinkerer-items.html';
           cache['_exported-on'] = new Date().toISOString();
           

@@ -129,7 +129,7 @@
           const value = localStorage.getItem(key);
           if (value === null) {
             console.log(`setting default for ${key} <- ${defaultValue}`);
-            this.write(key, defaultValue);
+            this.writeString(key, defaultValue);
             return defaultValue;
           }
           this.cache[key] = value;
@@ -157,6 +157,11 @@
           localStorage.setItem(key, value);
         }
         
+        clear() {
+          localStorage.clear();
+          this.cache = {};
+        }
+        
         dumpCache() {
           return JSON.stringify(this.cache, null, '  ');
         }
@@ -165,7 +170,7 @@
           this.cache = JSON.parse(json);
           // Assuming no values need to be deleted.
           for (const key in this.cache) {
-            this.write(key, this.cache[key]);
+            this.writeString(key, this.cache[key]);
           }
         }
       }
@@ -319,6 +324,7 @@
         const exportEl = exportTemplate.querySelector('#export');
         const exportButton = exportTemplate.querySelector('#exportButton');
         const importButton = exportTemplate.querySelector('#importButton');
+        const resetButton = exportTemplate.querySelector('#resetButton');
         
         exportButton.onclick = () => {
           // Assuming all necessary values have been read once.
@@ -362,6 +368,15 @@
           };
           document.body.appendChild(input);
           input.click();
+        };
+        
+        resetButton.onclick = () => {
+          const confirmation = confirm('All item quantities will be set to 0\n\nAre you sure?');
+          if (confirmation) {
+            storage.clear();
+            // Refresh the whole page, i.e. the lazy way.
+            window.location.reload();
+          }
         };
         
         document.getElementById('exportContainer').appendChild(exportEl);
@@ -493,6 +508,7 @@
       <div id="export">
         <button id="exportButton">Export</button>
         <button id="importButton">Import</button>
+        <button id="resetButton">Reset data</button>
       </div>
     </template>
 

@@ -140,6 +140,18 @@
         writeString(key, value) {
           value += '';
           
+          if (key == 'use-google-analytics' && value == 'true') {
+            // Do not store the default value of this special flag into the storage.
+            // This reduces the discoverability of the flag, for example
+            // from the exported files. This flag is really only meant for
+            // excluding myself (djjeck) from Google Analytics.
+            // If you're reading this comment and found out about the flag,
+            // feel free to enable it, in order to use this tool without
+            // leaving a trace. Just remember that the more users in
+            // Google Analytics I see, the happier I am.
+            return;
+          }
+          
           console.log(`writing ${key} <- ${value}`);
           this.cache[key] = value;
           localStorage.setItem(key, value);

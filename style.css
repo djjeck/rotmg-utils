@@ -1,5 +1,5 @@
 body {
-  --color-red: #ED767E;
+  --color-red: #E2A5AA;
   --color-green: #8CE288;
   
   --sprite-size: 64px;
@@ -50,7 +50,7 @@ body {
 
 .item.enough .itemImage {
   filter: grayscale(100%);
-  opacity: .4;
+  opacity: .45;
 }
 
 .quantityContainer {
@@ -84,8 +84,10 @@ body {
 }
 
 .rewards {
-  margin: 10px;
   display: inline-block;
+  vertical-align: top;
+  margin-left: 20px;
+  margin-top: 6px;
   box-shadow: 0px 0px 5px black;
 }
 
@@ -122,6 +124,11 @@ body {
   font-weight: bold;
   font-size: 1.2em;
   text-align: right;
+}
+
+#config input:disabled {
+  color: #000000;
+  border: none;
 }
 
 #export button {

@@ -166,6 +166,7 @@ body a {
 }
 
 #footer {
+  color: rgba(255, 255, 255, .7);
   font-size: 0.7em;
   text-align: right;
 }

@@ -2,6 +2,9 @@
   <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript">
+      const ENOUGH_ARMOR_ENOUGH = 1;
+      const ENOUGH_WEAPON_ENOUGH = 2;
+      
       const LogLevel = {
         DEBUG: 1,
         INFO: 2,
@@ -330,8 +333,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), 2);
-        const enoughWeapon = storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), 3);
+        const enoughArmor = storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), ENOUGH_ARMOR_ENOUGH);
+        const enoughWeapon = storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), ENOUGH_WEAPON_ENOUGH);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');
@@ -525,7 +528,7 @@
       Made by <a href="http://realmeye.com/player/djjeck">djjeck</a>.
       Source on <a href="https://github.com/djjeck/rotmg-utils">GitHub</a>
       <br>
-      For bugs, ideas, and outdated content, <a href="https://github.com/djjeck/rotmg-utils/issues">file an issue</a>
+      For bugs, ideas, and outdated content, <a href="https://github.com/djjeck/rotmg-utils/issues">create an issue</a>
       <br>
       If you find this useful, pot donations are welcome :)
     </div>

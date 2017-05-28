@@ -1,6 +1,6 @@
 body {
-  --color-red: #E2A5AA;
-  --color-green: #8CE288;
+  --color-red: #5A1E1C;
+  --color-green: #2B5A1C;
   
   --sprite-size: 64px;
   --item-image-margin: 5px;
@@ -47,9 +47,6 @@ body a {
 
 #content {
   user-select: none;
-}
-
-.itemsContainer {
   background-color: #363636;
 }
 

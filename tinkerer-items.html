@@ -475,6 +475,7 @@
         const pct = 100 * ownedItems / totalItems;
         
         const rewardEl = document.getElementById(keys.makeRewardKey(tier));
+        rewardEl.classList.toggle('missing', ownedItems == 0);
         rewardEl.classList.toggle('complete', ownedItems == totalItems);
         rewardEl.querySelector('.progressBar').style.width = `${pct}%`;
       }

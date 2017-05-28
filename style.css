@@ -4,6 +4,7 @@ body {
   
   --sprite-size: 64px;
   --item-image-margin: 5px;
+  --reward-margin: 20px;
 
   padding: 20px 40px;
   
@@ -27,7 +28,15 @@ body a {
 .module {
   display: block;
   margin: 20px auto;
-  width: auto;
+  width: calc(
+    /* 9 Items and their margins */
+    9 * (var(--sprite-size) + 2 * var(--item-image-margin)) +
+    /* Space before rewards */
+    var(--reward-margin) +
+    /* Rewards max size */
+    2 * var(--sprite-size) +
+    /* Not sure where this comes from */
+    var(--item-image-margin));
   
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.3);
@@ -99,7 +108,7 @@ body a {
 .rewards {
   display: inline-block;
   vertical-align: top;
-  margin-left: 20px;
+  margin-left: var(--reward-margin);
   margin-top: 6px;
   box-shadow: 0px 0px 5px black;
 }

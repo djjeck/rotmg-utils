@@ -4,29 +4,44 @@ body {
   
   --sprite-size: 64px;
   --item-image-margin: 5px;
+
+  padding: 20px 40px;
   
   background-color: #AAAAAA;
-  padding: 20px 40px;
+  background-image: url('img/tinkerer-floor-pattern.png');
+  background-repeat: repeat;
+  color: #FFFFFF;
   font-family: Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+body a {
+  color: #FFFFFF;
+  text-decoration: underline;
 }
 
 .sprite {
   width: var(--sprite-size);
 }
 
-#content,
-#config,
-#export {
+.module {
   display: block;
   margin: 20px auto;
   width: auto;
   
-  padding: 30px;
-  background-color: #FFFFFF;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.module a {
 }
 
 #content {
   user-select: none;
+}
+
+.itemsContainer {
+  background-color: #363636;
 }
 
 .row {
@@ -36,8 +51,7 @@ body {
 .item {
   display: inline-block;
   margin: var(--item-image-margin);
-  box-shadow: 0px 0px 5px black;
-  background-color: #FFFFFF;
+  background-color: #545454;
 }
 
 .item.missing {
@@ -60,7 +74,6 @@ body {
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
-  background-color: #FFFFFF;
 }
 
 .quantity {

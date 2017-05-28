@@ -246,7 +246,10 @@
       }
       
       function render() {
+        const containerEl = document.createElement('div');
+        containerEl.className = 'itemsContainer';
         const contentEl = document.getElementById('content');
+        contentEl.appendChild(containerEl);
         
         for (const tier of Object.values(Tier)) {
           const rowEl = document.createElement('div');
@@ -275,7 +278,7 @@
           }
           rowEl.appendChild(rewardsEl);
           
-          contentEl.appendChild(rowEl);
+          containerEl.appendChild(rowEl);
           
           decorateRewards(tier);
         }
@@ -495,9 +498,9 @@
     <div class="tinkerer">
       <img class="sprite" src="img/tinkerer.png" />
     </div>
-    <div id="content">
+    <div id="content" class="module">
     </div>
-    <div id="config">
+    <div id="config" class="module">
       <label>
         <span class="label">Enough armors</span>
         <input id="config-enough-armors" type="number" min="1" max="99" />
@@ -516,9 +519,9 @@
         <input id="config-vault-slots" type="number" min="1" max="640" disabled="disabled" />
       </label>
     </div>
-    <div id="exportContainer">
+    <div id="exportContainer" class="module">
     </div>
-    <div id="footer">
+    <div id="footer" class="module">
       Made by <a href="http://realmeye.com/player/djjeck">djjeck</a>.
       Source on <a href="https://github.com/djjeck/rotmg-utils">GitHub</a>.
       <br>

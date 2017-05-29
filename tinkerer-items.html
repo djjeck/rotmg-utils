@@ -494,6 +494,8 @@
 
         ga('create', 'UA-9512500-11', 'auto');
         ga('send', 'pageview');
+      } else {
+        logger.log(LogLevel.WARNING, 'Google Analytics is disabled');
       }
     </script>
     <title>Tinkerer items</title>

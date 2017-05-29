@@ -44,7 +44,7 @@ body {
     --sprite-size: 24px;
     --item-image-margin: 2px;
     --reward-margin: 10px;
-    --main-font-size: .2em;
+    --main-font-size: .55em;
   }
   .githubBanner {
     transform: scale(.5);

@@ -1,18 +1,65 @@
+/* Common variables */
 body {
   --color-red: #5A1E1C;
   --color-green: #2B5A1C;
-  
+}
+
+/* Variables for large windows */
+body {
   --sprite-size: 64px;
   --item-image-margin: 5px;
   --reward-margin: 20px;
+  --main-font-size: 1em;
+}
 
-  padding: 20px 40px;
+/** Variables for medium windows */
+@media all and (max-width: 900px) {
+  body {
+    --sprite-size: 48px;
+    --item-image-margin: 4px;
+    --reward-margin: 15px;
+    --main-font-size: .8em;
+  }
+  .githubBanner {
+    transform: scale(.7);
+  }
+}
+
+/** Variables for small windows */
+@media all and (max-width: 700px) {
+  body {
+    --sprite-size: 32px;
+    --item-image-margin: 3px;
+    --reward-margin: 10px;
+    --main-font-size: .6em;
+  }
+  .githubBanner {
+    transform: scale(.6);
+  }
+}
+
+/** Variables for tiny windows */
+@media all and (max-width: 530px) {
+  body {
+    --sprite-size: 24px;
+    --item-image-margin: 2px;
+    --reward-margin: 10px;
+    --main-font-size: .2em;
+  }
+  .githubBanner {
+    transform: scale(.5);
+  }
+}
+
+body {
+  padding: 20px 10px;
   
   background-color: #AAAAAA;
   background-image: url('img/tinkerer-floor-pattern.png');
   background-repeat: repeat;
   color: #FFFFFF;
   font-family: Helvetica, Arial, sans-serif;
+  font-size: var(--main-font-size);
   font-weight: 300;
 }
 
@@ -36,13 +83,10 @@ body a {
     /* Rewards max size */
     2 * var(--sprite-size) +
     /* Not sure where this comes from */
-    var(--item-image-margin));
+    5px);
   
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.3);
-}
-
-.module a {
 }
 
 #content {
@@ -76,17 +120,17 @@ body a {
 }
 
 .quantityContainer {
-  display: block;
+  display: flex;
   max-width: var(--sprite-size);
   padding: 5px 0px;
-  text-align: center;
+  justify-content: space-between;
   font-size: 1.2em;
-  font-weight: bold;
 }
 
 .quantity {
   display: inline-block;
-  margin: 0px 5px;
+  margin: 0px 2px;
+  font-weight: bold;
 }
 
 .quantityButton {
@@ -164,4 +208,12 @@ body a {
   color: rgba(255, 255, 255, .7);
   font-size: 0.7em;
   text-align: right;
+}
+
+.githubBanner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  transform-origin: right top;
 }

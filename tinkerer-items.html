@@ -4,6 +4,7 @@
     <script type="text/javascript">
       const ENOUGH_ARMOR_ENOUGH = 1;
       const ENOUGH_WEAPON_ENOUGH = 2;
+      const POPUP_DISMISS_TIME = 5000;
       
       const LogLevel = {
         DEBUG: 1,
@@ -23,8 +24,29 @@
         
         log(level, message) {
           if (level >= this.logLevel) {
+            if (level >= LogLevel.WARNING) {
+              this.showPopup(level, message);
+            }
+            
+            // Always write on the console.
             console.log(message);
           }
+        }
+        
+        showPopup(level, message) {
+          if (document.body === null) {
+            // Body is not available yet, set up a callback.
+            window.addEventListener('load', this.showPopup.bind(this, level, message));
+            return;
+          }
+          
+          const popup = document.createElement('div');
+          popup.className = 'popup';
+          popup.innerText = message;
+          document.body.appendChild(popup);
+          window.setTimeout(() => {
+            document.body.removeChild(popup);
+          }, POPUP_DISMISS_TIME);
         }
       }
     </script>

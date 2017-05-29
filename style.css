@@ -211,9 +211,35 @@ body a {
 }
 
 .githubBanner {
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   border: 0;
   transform-origin: right top;
+}
+
+.popup {
+  display: block;
+  min-width: 100px;
+  max-width: 300px;
+  position: fixed;
+  left: 15px;
+  
+  padding: 5px 10px;
+  border: 2px solid var(--color-red);
+  background-color: #504538;
+  color: #D1D1D1;
+}
+
+.popup {
+  animation-duration: 4.5s;
+  animation-name: popUp;
+  animation-fill-mode: both;
+}
+
+@keyframes popUp {
+    0% { bottom: -100px; opacity: .1; }
+   10% { bottom:   25px; opacity:  1; }
+   90% { bottom:   25px; opacity:  1; }
+  100% { bottom: -100px; opacity: .1; }
 }

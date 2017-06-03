@@ -445,10 +445,12 @@
         <img class="sprite itemImage" />
         <div class="quantityContainer">
           <!-- White Down-Pointing Triangle https://unicode-table.com/en/25BD/ -->
-          <span class="quantityButton">&#x25BD;</span>
+          <span class="quantityButton" tabindex="0"
+              onkeypress="if(event.keyCode == 13 || event.keyCode == 32) this.click()">&#x25BD;</span>
           <span class="quantity"></span>
           <!-- White Up-Pointing Triangle https://unicode-table.com/en/25B3/ -->
-          <span class="quantityButton">&#x25B3;</span>
+          <span class="quantityButton" tabindex="0"
+              onkeypress="if(event.keyCode == 13 || event.keyCode == 32) this.click()">&#x25B3;</span>
         </div>
       </div>
     </template>

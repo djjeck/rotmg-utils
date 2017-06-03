@@ -1,63 +1,12 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="logger.js"></script>
+    <script type="text/javascript" src="storage.js"></script>
     <script type="text/javascript">
       const ENOUGH_ARMOR_ENOUGH = 1;
       const ENOUGH_WEAPON_ENOUGH = 2;
-      const POPUP_DISMISS_TIME = 5000;
       
-      const LogLevel = {
-        DEBUG: 1,
-        INFO: 2,
-        WARNING: 3,
-        ERROR: 4,
-      };
-      
-      class Logger {
-        constructor() {
-          this.logLevel = LogLevel.INFO;
-          
-          // Automatically handle uncaught errors.
-          window.onerror = (msg, url, line, col, error) => {
-            this.log(LogLevel.ERROR, msg + (error ? '\n\n' + error : ''));
-            // Do not catch the error, so that the console still shows it.
-            return false;
-          }
-        }
-        
-        setLogLevel(level) {
-          this.logLevel = level;
-        }
-        
-        log(level, message) {
-          if (level >= this.logLevel) {
-            if (level >= LogLevel.WARNING) {
-              this.showPopup(level, message);
-            }
-            
-            // Always write on the console.
-            console.log(message);
-          }
-        }
-        
-        showPopup(level, message) {
-          if (document.body === null) {
-            // Body is not available yet, set up a callback.
-            window.addEventListener('load', this.showPopup.bind(this, level, message));
-            return;
-          }
-          
-          const popup = document.createElement('div');
-          popup.className = 'popup';
-          popup.innerText = message;
-          document.body.appendChild(popup);
-          window.setTimeout(() => {
-            document.body.removeChild(popup);
-          }, POPUP_DISMISS_TIME);
-        }
-      }
-    </script>
-    <script type="text/javascript">
       const Tier = {
         T7: 7,
         T8: 8,
@@ -149,93 +98,6 @@
             default: throw `Invalid type: ${type}`;
           }
           return `enough-${typeKey}`;
-        }
-      }
-      
-      class Storage {
-        constructor() {
-          this.cache = {};
-        }
-        
-        readBoolean(key, defaultValue = false) {
-          const stringValue = this.readString(key, defaultValue);
-          return stringValue === 'true';
-        }
-        
-        writeBoolean(key, value) {
-          this.writeString(key, value);
-        }
-        
-        readNumber(key, defaultValue = 0) {
-          const stringValue = this.readString(key, defaultValue);
-          return parseFloat(stringValue);
-        }
-        
-        writeNumber(key, value) {
-          this.writeString(key, value);
-        }
-        
-        readString(key, defaultValue = '') {
-          defaultValue += '';
-          
-          if (key in this.cache) {
-            logger.log(LogLevel.DEBUG, `reading ${key} -> ${this.cache[key]} (cached)`);
-            return this.cache[key];
-          }
-          const value = localStorage.getItem(key);
-          if (value === null) {
-            logger.log(LogLevel.DEBUG, `setting default for ${key} <- ${defaultValue}`);
-            this.writeString(key, defaultValue);
-            return defaultValue;
-          }
-          this.cache[key] = value;
-          logger.log(LogLevel.DEBUG, `reading ${key} -> ${value}`);
-          return value;          
-        }
-        
-        writeString(key, value) {
-          value += '';
-          
-          // Do not store the default value of these special flags into the storage.
-          // This reduces the discoverability of the flags, for example from the
-          // exported files. 
-          if (
-            (key == 'log-level' && value == 'INFO') ||
-            // This flag is really only meant for excluding myself (djjeck)
-            // from Google Analytics.
-            // If you're reading this comment and found out about the flag,
-            // feel free to enable it, in order to use this tool without
-            // leaving a trace. Just remember that the more users in
-            // Google Analytics I see, the happier I am.
-            (key == 'use-google-analytics' && value == 'true')
-          ) {
-            localStorage.removeItem(key);
-            return;
-          }
-          
-          logger.log(LogLevel.DEBUG, `writing ${key} <- ${value}`);
-          this.cache[key] = value;
-          localStorage.setItem(key, value);
-        }
-        
-        clear() {
-          localStorage.clear();
-          this.cache = {};
-        }
-        
-        dumpCache() {
-          // Clone cache.
-          return Object.assign({}, this.cache);
-        }
-        
-        importCache(json) {
-          this.cache = JSON.parse(json);
-          // Assuming no values need to be deleted.
-          for (const key in this.cache) {
-            if (!key.startsWith('_')) { // Skip "comment" values.
-              this.writeString(key, this.cache[key]);
-            }
-          }
         }
       }
       

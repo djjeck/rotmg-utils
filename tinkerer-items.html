@@ -191,7 +191,11 @@
         const itemEl = itemTemplate.querySelector('.item');
         const imageEl = itemTemplate.querySelector('.itemImage');
         const quantityEl = itemTemplate.querySelector('.quantity');
-        const [quantityLessEl, quantityMoreEl] = itemTemplate.querySelectorAll('.quantityButton');
+        // TODO use destructuring assignment when supported by edge:
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+        const quantityEls = itemTemplate.querySelectorAll('.quantityButton');
+        const quantityLessEl = quantityEls[0];
+        const quantityMoreEl = quantityEls[1];
         
         itemEl.id = id;
         

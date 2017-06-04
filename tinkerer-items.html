@@ -138,6 +138,8 @@
         initConfig();
         render();
         initExport();
+        document.getElementById('unsupportedBrowser').style.display = 'none';
+        document.getElementById('supportedBrowser').style.display = 'block';
       }
       
       function render() {
@@ -398,50 +400,57 @@
     <meta property="og:image:type" content="image/png" />
   </head>
   <body onload="bodyLoad();">
-    <div class="tinkererContainer">
-      <img class="tinkerer sprite" src="img/tinkerer.png" />
-      <div class="tinkerer-bubble">
-        Stock up your vault and be ready for my quests!
-        <br>
-        Use this tool to keep track of your inventory.
+    <div id="unsupportedBrowser" style="display: block;">
+      Looks like your browser is not supported. Sorry!
+      <br>
+      If you want, you can <a href="https://github.com/djjeck/rotmg-utils/issues" target="_blank">create an issue</a>.
+    </div>
+    <div id="supportedBrowser" style="display: none;">
+      <div class="tinkererContainer">
+        <img class="tinkerer sprite" src="img/tinkerer.png" />
+        <div class="tinkerer-bubble">
+          Stock up your vault and be ready for my quests!
+          <br>
+          Use this tool to keep track of your inventory.
+        </div>
       </div>
-    </div>
-    <div id="content" class="module">
-    </div>
-    <div id="config" class="module">
-      <label>
-        <span class="label">Enough armors</span>
-        <input id="config-enough-armors" type="number" min="1" max="99" step="1" />
-      </label>
-      <label>
-        <span class="label">Enough weapons</span>
-        <input id="config-enough-weapons" type="number" min="1" max="99" step="1" />
-      </label>
+      <div id="content" class="module">
+      </div>
+      <div id="config" class="module">
+        <label>
+          <span class="label">Enough armors</span>
+          <input id="config-enough-armors" type="number" min="1" max="99" step="1" />
+        </label>
+        <label>
+          <span class="label">Enough weapons</span>
+          <input id="config-enough-weapons" type="number" min="1" max="99" step="1" />
+        </label>
       
-      <label>
-        <span class="label">Vault chests</span>
-        <input id="config-vault-chests" type="number" min="1" max="80" step="any" disabled="disabled" />
-      </label>
-      <label>
-        <span class="label">Vault slots</span>
-        <input id="config-vault-slots" type="number" min="1" max="640" step="1" disabled="disabled" />
-      </label>
-    </div>
-    <div id="exportContainer" class="module">
-    </div>
-    <div id="footer" class="module">
-      Made by <a href="http://realmeye.com/player/djjeck" target="_blank">djjeck</a>.
-      Source on <a href="https://github.com/djjeck/rotmg-utils" target="_blank">GitHub</a>
-      <br>
-      For bugs, ideas, and updating content, <a href="https://github.com/djjeck/rotmg-utils/issues" target="_blank">create an issue</a>
-      <br>
-      If you find this useful, pot donations are welcome :)
-    </div>
+        <label>
+          <span class="label">Vault chests</span>
+          <input id="config-vault-chests" type="number" min="1" max="80" step="any" disabled="disabled" />
+        </label>
+        <label>
+          <span class="label">Vault slots</span>
+          <input id="config-vault-slots" type="number" min="1" max="640" step="1" disabled="disabled" />
+        </label>
+      </div>
+      <div id="exportContainer" class="module">
+      </div>
+      <div id="footer" class="module">
+        Made by <a href="http://realmeye.com/player/djjeck" target="_blank">djjeck</a>.
+        Source on <a href="https://github.com/djjeck/rotmg-utils" target="_blank">GitHub</a>
+        <br>
+        For bugs, ideas, and updating content, <a href="https://github.com/djjeck/rotmg-utils/issues" target="_blank">create an issue</a>
+        <br>
+        If you find this useful, pot donations are welcome :)
+      </div>
 
-    <!-- Fork me on GitHub ribbon, from https://github.com/blog/273-github-ribbons -->
-    <a class="githubBanner" href="https://github.com/djjeck/rotmg-utils" target="_blank">
-      <img src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
-    </a>
+      <!-- Fork me on GitHub ribbon, from https://github.com/blog/273-github-ribbons -->
+      <a class="githubBanner" href="https://github.com/djjeck/rotmg-utils" target="_blank">
+        <img src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+      </a>
+    </div>
     
     
     <!-- Templates -->

@@ -446,42 +446,43 @@
     
     <!-- Templates -->
     
-    <template id="itemTemplate">
-      <div class="item">
-        <img class="sprite itemImage" />
-        <div class="quantityContainer">
-          <!-- White Down-Pointing Triangle https://unicode-table.com/en/25BD/ -->
-          <span class="quantityButton" tabindex="0"
-              onkeypress="if(event.keyCode == 13 || event.keyCode == 32) this.click()">&#x25BD;</span>
-          <span class="quantity"></span>
-          <!-- White Up-Pointing Triangle https://unicode-table.com/en/25B3/ -->
-          <span class="quantityButton" tabindex="0"
-              onkeypress="if(event.keyCode == 13 || event.keyCode == 32) this.click()">&#x25B3;</span>
+    <div id="templates" style="display: none;">
+      <template id="itemTemplate">
+        <div class="item">
+          <img class="sprite itemImage" />
+          <div class="quantityContainer">
+            <!-- White Down-Pointing Triangle https://unicode-table.com/en/25BD/ -->
+            <span class="quantityButton" tabindex="0"
+                onkeypress="if(event.keyCode == 13 || event.keyCode == 32) this.click()">&#x25BD;</span>
+            <span class="quantity"></span>
+            <!-- White Up-Pointing Triangle https://unicode-table.com/en/25B3/ -->
+            <span class="quantityButton" tabindex="0"
+                onkeypress="if(event.keyCode == 13 || event.keyCode == 32) this.click()">&#x25B3;</span>
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
     
-    <template id="rewardsTemplate">
-      <div class="rewards">
-        <div class="rewardContainer"></div>
-        <div class="progressBarContainer">
-          <div class="progressBar"></div>
+      <template id="rewardsTemplate">
+        <div class="rewards">
+          <div class="rewardContainer"></div>
+          <div class="progressBarContainer">
+            <div class="progressBar"></div>
+          </div>
         </div>
-      </div>
-    </template>
+      </template>
     
-    <template id="rewardTemplate">
-      <img class="sprite rewardImage" />
-    </template>
+      <template id="rewardTemplate">
+        <img class="sprite rewardImage" />
+      </template>
     
-    <template id="exportTemplate">
-      <div id="export">
-        <button id="exportButton">Export</button>
-        <button id="importButton">Import</button>
-        <button id="resetButton">Reset data</button>
-      </div>
-    </template>
-    
+      <template id="exportTemplate">
+        <div id="export">
+          <button id="exportButton">Export</button>
+          <button id="importButton">Import</button>
+          <button id="resetButton">Reset data</button>
+        </div>
+      </template>
+    </div>
     
   </body>
 </html>

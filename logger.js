@@ -19,7 +19,7 @@ class Logger {
     
     // Automatically handle uncaught errors.
     window.onerror = (msg, url, line, col, error) => {
-      this.log(LogLevel.ERROR, msg + (error ? '\n\n' + error : ''));
+      this.log(LogLevel.ERROR, `${msg} (Line ${line})` + (error ? ' \n\n' + error : ''));
       // Do not catch the error, so that the console still shows it.
       return false;
     }

@@ -127,6 +127,90 @@
         }
       }
       
+      class Item {
+        constructor(tier, itemType, classType) {
+          this.tier = tier;
+          this.itemType = itemType;
+          this.classType = classType;
+        }
+        
+        getTier() {
+          return this.tier;
+        }
+        
+        getItemType() {
+          return this.itemType;
+        }
+        
+        getClassType() {
+          return this.classType;
+        }
+        
+        toString() {
+          const key = this.getQuantityKey();
+          return `[Item ${key}]`;
+        }
+        
+        getQuantityKey() {
+          return keys.makeItemQuantityKey(this.tier, this.itemType, this.classType);
+        }
+      }
+      
+      class ItemRow {
+        constructor(tier, items = []) {
+          this.tier = tier;
+          this.items = items;
+        }
+        
+        getTier() {
+          return this.tier;
+        }
+        
+        addItem(item) {
+          this.items.push(item);
+        }
+        
+        getItems() {
+          return this.items;
+        }
+      }
+      
+      const tinkererItems = [
+        new ItemRow(Tier.T7, [
+          new Item(Tier.T7, ItemType.ARMOR, ArmorType.LEATHER),
+          new Item(Tier.T7, ItemType.ARMOR, ArmorType.ROBE),
+          new Item(Tier.T7, ItemType.ARMOR, ArmorType.HEAVY),
+          new Item(Tier.T7, ItemType.WEAPON, WeaponType.DAGGER),
+          new Item(Tier.T7, ItemType.WEAPON, WeaponType.BOW),
+          new Item(Tier.T7, ItemType.WEAPON, WeaponType.STAFF),
+          new Item(Tier.T7, ItemType.WEAPON, WeaponType.WAND),
+          new Item(Tier.T7, ItemType.WEAPON, WeaponType.SWORD),
+          new Item(Tier.T7, ItemType.WEAPON, WeaponType.KATANA),
+        ]),
+        new ItemRow(Tier.T8, [
+          new Item(Tier.T8, ItemType.ARMOR, ArmorType.LEATHER),
+          new Item(Tier.T8, ItemType.ARMOR, ArmorType.ROBE),
+          new Item(Tier.T8, ItemType.ARMOR, ArmorType.HEAVY),
+          new Item(Tier.T8, ItemType.WEAPON, WeaponType.DAGGER),
+          new Item(Tier.T8, ItemType.WEAPON, WeaponType.BOW),
+          new Item(Tier.T8, ItemType.WEAPON, WeaponType.STAFF),
+          new Item(Tier.T8, ItemType.WEAPON, WeaponType.WAND),
+          new Item(Tier.T8, ItemType.WEAPON, WeaponType.SWORD),
+          new Item(Tier.T8, ItemType.WEAPON, WeaponType.KATANA),
+        ]),
+        new ItemRow(Tier.T9, [
+          new Item(Tier.T9, ItemType.ARMOR, ArmorType.LEATHER),
+          new Item(Tier.T9, ItemType.ARMOR, ArmorType.ROBE),
+          new Item(Tier.T9, ItemType.ARMOR, ArmorType.HEAVY),
+          new Item(Tier.T9, ItemType.WEAPON, WeaponType.DAGGER),
+          new Item(Tier.T9, ItemType.WEAPON, WeaponType.BOW),
+          new Item(Tier.T9, ItemType.WEAPON, WeaponType.STAFF),
+          new Item(Tier.T9, ItemType.WEAPON, WeaponType.WAND),
+          new Item(Tier.T9, ItemType.WEAPON, WeaponType.SWORD),
+          new Item(Tier.T9, ItemType.WEAPON, WeaponType.KATANA),
+        ]),
+      ];
+      
       const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
@@ -149,18 +233,16 @@
         const contentEl = document.getElementById('content');
         contentEl.appendChild(containerEl);
         
-        for (const tier of Object.values(Tier)) {
+        for (const row of tinkererItems) {
           const rowEl = document.createElement('div');
           rowEl.className = 'row';
           
-          // Render armors.
-          for (const armorType of Object.values(ArmorType)) {
-            rowEl.appendChild(renderItem(tier, ItemType.ARMOR, armorType));
-          }
+          const tier = row.getTier();
           
-          // Render weapons.
-          for (const weaponType of Object.values(WeaponType)) {
-            rowEl.appendChild(renderItem(tier, ItemType.WEAPON, weaponType));
+          for (const item of row.getItems()) {
+            const itemType = item.getItemType();
+            const classType = item.getClassType();
+            rowEl.appendChild(renderItem(tier, itemType, classType));
           }
           
           // Render rewards.
@@ -340,20 +422,13 @@
       }
       
       function decorateQuantities(type) {
-        for (const tier of Object.values(Tier)) {
-          for (const type of Object.values(ItemType)) {
-            let itemClasses;
-            switch (type) {
-              case ItemType.ARMOR: itemClasses = Object.values(ArmorType); break;
-              case ItemType.WEAPON: itemClasses = Object.values(WeaponType); break;
-              default: throw `Invalid type: ${type}`;
-            }
-            for (const itemClass of itemClasses) {
-              const key = keys.makeItemQuantityKey(tier, type, itemClass);
-              const id = `item-${key}`;
-              const itemEl = document.getElementById(id);
-              decorateQuantity(itemEl, type, storage.readNumber(key));
-            }
+        for (const row of tinkererItems) {
+          for (const item of row.getItems()) {
+            const key = item.getQuantityKey();
+            const type = item.getItemType();
+            const id = `item-${key}`;
+            const itemEl = document.getElementById(id);
+            decorateQuantity(itemEl, type, storage.readNumber(key));
           }
         }
       }

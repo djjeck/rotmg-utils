@@ -6,8 +6,8 @@
     <script type="text/javascript" src="logger.js"></script>
     <script type="text/javascript" src="storage.js"></script>
     <script type="text/javascript">
-      const ENOUGH_ARMOR_ENOUGH = 1;
-      const ENOUGH_WEAPON_ENOUGH = 2;
+      const ENOUGH_ARMOR_DEFAULT = 1;
+      const ENOUGH_WEAPON_DEFAULT = 2;
       
       const Tier = {
         T7: 7,
@@ -232,8 +232,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), ENOUGH_ARMOR_ENOUGH);
-        const enoughWeapon = storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), ENOUGH_WEAPON_ENOUGH);
+        const enoughArmor = storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), ENOUGH_ARMOR_DEFAULT);
+        const enoughWeapon = storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), ENOUGH_WEAPON_DEFAULT);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');

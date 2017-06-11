@@ -56,9 +56,10 @@
       }
       
       class ItemRow {
-        constructor(tier, items = []) {
+        constructor(tier, items = [], rewards = []) {
           this.tier = tier;
           this.items = items;
+          this.rewards = rewards;
         }
         
         getTier() {
@@ -71,6 +72,10 @@
         
         getItems() {
           return this.items;
+        }
+        
+        getRewards() {
+          return this.rewards;
         }
       }
       
@@ -85,6 +90,8 @@
           new Weapon(Tier.T7, WeaponType.WAND),
           new Weapon(Tier.T7, WeaponType.SWORD),
           new Weapon(Tier.T7, WeaponType.KATANA),
+        ], [
+          new Boost('xp-booster-1'),
         ]),
         new ItemRow(Tier.T8, [
           new Armor(Tier.T8, ArmorType.LEATHER),
@@ -96,6 +103,9 @@
           new Weapon(Tier.T8, WeaponType.WAND),
           new Weapon(Tier.T8, WeaponType.SWORD),
           new Weapon(Tier.T8, WeaponType.KATANA),
+        ], [
+          new Boost('loot-tier-potion'),
+          new Boost('loot-drop-potion'),
         ]),
         new ItemRow(Tier.T9, [
           new Armor(Tier.T9, ArmorType.LEATHER),
@@ -107,20 +117,10 @@
           new Weapon(Tier.T9, WeaponType.WAND),
           new Weapon(Tier.T9, WeaponType.SWORD),
           new Weapon(Tier.T9, WeaponType.KATANA),
+        ], [
+          new StatPot(Stat.VIT),
+          new StatPot(Stat.WIS),
         ]),
-      ];
-      
-      const rewards = {};
-      rewards[Tier.T7] = [
-        new Boost('xp-booster-1'),
-      ];
-      rewards[Tier.T8] = [
-        new Boost('loot-tier-potion'),
-        new Boost('loot-drop-potion'),
-      ];
-      rewards[Tier.T9] = [
-        new StatPot(Stat.VIT),
-        new StatPot(Stat.WIS),
       ];
       
       const logger = new Logger();
@@ -159,7 +159,7 @@
           const rewardsEl = rewardsTemplate.querySelector('.rewards');
           rewardsEl.id = keys.makeRewardKey(tier);
           const rewardContainer = rewardsTemplate.querySelector('.rewardContainer');
-          for (const reward of rewards[tier]) {
+          for (const reward of row.getRewards()) {
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward.getImage();

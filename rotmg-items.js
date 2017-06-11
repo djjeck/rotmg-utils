@@ -1,39 +1,24 @@
-const Stat = {
-  ATT: 1,
-  SPD: 2,
-  DEF: 3,
-  DEX: 4,
-  VIT: 5,
-  WIS: 6,
-  LIFE: 7,
-  MANA: 8,
-};
+function makeEnum(names) {
+  const obj = {};
+  const values = [];
+  const strings = {};
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    const value = i + 1;
+    obj[name] = value; // Avoid 0, which might be mistaken with undefined
+    values.push(value);
+    strings[value] = name.toLowerCase();
+  }
+  obj.values = () => values;
+  obj.toString = value => strings[value];
+  return obj;
+}
 
-const Tier = {
-  T7: 7,
-  T8: 8,
-  T9: 9,
-};
-
-const ItemType = {
-  ARMOR: 1,
-  WEAPON: 2,
-};
-
-const ArmorType = {
-  LEATHER: 1,
-  ROBE: 2,
-  HEAVY: 3,
-};
-
-const WeaponType = {
-  DAGGER: 1,
-  BOW: 2,
-  STAFF: 3,
-  WAND: 4,
-  SWORD: 5,
-  KATANA: 6,
-};
+const Stat = makeEnum(['VIT', 'SPD', 'DEF', 'DEX', 'VIT', 'WIS', 'LIFE', 'MANA']);
+const Tier = makeEnum(['T7', 'T8', 'T9']);
+const ItemType = makeEnum(['ARMOR', 'WEAPON']);
+const ArmorType = makeEnum(['LEATHER', 'ROBE', 'HEAVY']);
+const WeaponType = makeEnum(['DAGGER', 'BOW', 'STAFF', 'WAND', 'SWORD', 'KATANA']);
 
 class Item {
 }

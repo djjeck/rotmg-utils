@@ -15,6 +15,9 @@
       const ENOUGH_ARMOR_DEFAULT = 1;
       const ENOUGH_WEAPON_DEFAULT = 2;
       
+      const HOVER_INFO_X_OFFSET = 5;
+      const HOVER_INFO_Y_OFFSET = 25;
+      
       class Keys {
         getTierKey(tier) {
           return Tier.toString(tier);
@@ -97,7 +100,7 @@
           new Weapon(Tier.T7, WeaponType.SWORD,  {name: 'Golden Sword',         feedPower: 70}),
           new Weapon(Tier.T7, WeaponType.KATANA, {name: 'Buster Katana',        feedPower: 70}),
         ], [
-          new Boost('xp-booster-1', {name: 'XP Booster'}),
+          new Boost('xp-booster-1', {name: 'XP Booster', feedPower: 110}),
         ]),
         new ItemRow(Tier.T8, [
           new Armor (Tier.T8, ArmorType.LEATHER, {name: 'Studded Leather Armor',   feedPower: 77}),
@@ -110,8 +113,8 @@
           new Weapon(Tier.T8, WeaponType.SWORD,  {name: 'Ravenheart Sword',        feedPower: 100}),
           new Weapon(Tier.T8, WeaponType.KATANA, {name: 'Demon Edge',              feedPower: 100}),
         ], [
-          new Boost('loot-tier-potion', {name: 'Loot Tier Potion'}),
-          new Boost('loot-drop-potion', {name: 'Loot Drop Potion'}),
+          new Boost('loot-tier-potion', {name: 'Loot Tier Potion', feedPower: 150}),
+          new Boost('loot-drop-potion', {name: 'Loot Drop Potion', feedPower: 150}),
         ]),
         new ItemRow(Tier.T9, [
           new Armor (Tier.T9, ArmorType.LEATHER, {name: 'Drake Hide Armor',         feedPower: 110}),
@@ -124,8 +127,8 @@
           new Weapon(Tier.T9, WeaponType.SWORD,  {name: 'Dragonsoul Sword',         feedPower: 145}),
           new Weapon(Tier.T9, WeaponType.KATANA, {name: 'Jewel Eye Katana',         feedPower: 145}),
         ], [
-          new StatPot(Stat.VIT, {name: 'Potion of Vitality'}),
-          new StatPot(Stat.WIS, {name: 'Potion of Wisdom'}),
+          new StatPot(Stat.VIT, {name: 'Potion of Vitality', feedPower: 150}),
+          new StatPot(Stat.WIS, {name: 'Potion of Wisdom', feedPower: 150}),
         ]),
       ];
       
@@ -142,6 +145,42 @@
         initExport();
         document.getElementById('unsupportedBrowser').style.display = 'none';
         document.getElementById('supportedBrowser').style.display = 'block';
+      }
+      
+      function itemMouseenter(item, event) {
+        const card = document.getElementById('hoverInfo');
+        const image = item.getImage();
+        const name = item.getInfo().name;
+        const tier = (item instanceof Equipment) ? Tier.toString(item.getTier()).toUpperCase() : '';
+        const feedPower = item.getInfo().feedPower || 0;
+        
+        const imageEl = card.querySelector('.image');
+        const nameEl = card.querySelector('.name');
+        const tierEl = card.querySelector('.tier');
+        const detailsEl = card.querySelector('.details');
+        
+        imageEl.src = image;
+        imageEl.alt = name;
+        nameEl.innerText = name;
+        tierEl.innerText = tier;
+        const detailsText = feedPower > 0 ? `Feed power: ${feedPower}` : '';
+        detailsEl.style.display = detailsText ? 'block' : 'none';
+        detailsEl.innerText = detailsText;
+        
+        card.style.display = 'block';
+      }
+      
+      function itemMouseout(item, event) {
+        const card = document.getElementById('hoverInfo');
+        card.style.display = 'none';
+      }
+      
+      function itemMousemove(item, event) {
+        const card = document.getElementById('hoverInfo');
+        const x = event.clientX + HOVER_INFO_X_OFFSET;
+        const y = event.clientY + HOVER_INFO_Y_OFFSET;
+        card.style.left = `${x}px`;
+        card.style.top = `${y}px`;
       }
       
       function render() {
@@ -170,6 +209,9 @@
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward.getImage();
             imageEl.alt = reward.getInfo().name;
+            imageEl.onmousemove = itemMousemove.bind(null, reward);
+            imageEl.onmouseenter = itemMouseenter.bind(null, reward);
+            imageEl.onmouseout = itemMouseout.bind(null, reward);
             rewardContainer.appendChild(rewardTemplate);
           }
           rowEl.appendChild(rewardsEl);
@@ -227,6 +269,9 @@
         
         imageEl.src = src;
         imageEl.alt = name;
+        imageEl.onmousemove = itemMousemove.bind(null, item);
+        imageEl.onmouseenter = itemMouseenter.bind(null, item);
+        imageEl.onmouseout = itemMouseout.bind(null, item);
         quantityLessEl.onclick = decreaseQuantity;
         quantityMoreEl.onclick = increaseQuantity;
         updateQuantity();
@@ -448,6 +493,16 @@
       </a>
     </div>
     
+    <div id="hoverInfo" style="display: none;">
+      <div class="section header">
+        <img class="image" />
+        <span class="name"></span>
+        <span class="tier"></span>
+      </div>
+      <div class="section details">
+      </div>
+    </div>
+    
     
     <!-- Templates -->
     
@@ -466,7 +521,7 @@
           </div>
         </div>
       </template>
-    
+      
       <template id="rewardsTemplate">
         <div class="rewards">
           <div class="rewardContainer"></div>
@@ -475,11 +530,11 @@
           </div>
         </div>
       </template>
-    
+      
       <template id="rewardTemplate">
         <img class="sprite rewardImage" />
       </template>
-    
+      
       <template id="exportTemplate">
         <div id="export">
           <button id="exportButton">Export</button>

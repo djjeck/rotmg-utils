@@ -257,6 +257,7 @@
       function initExport() {
         if (!Blob || !FileReader) {
           logger.log(LogLevel.WARNING, 'Exporting to a file is not supported');
+          document.getElementById('exportContainer').style.display = 'none';
           return;
         }
         

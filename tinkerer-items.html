@@ -109,21 +109,8 @@
           return `img/${imageKey}.png`;
         }
         
-        getRewardImages(tier) {
-          switch (tier) {
-            case Tier.T7: return [
-              'img/xp-booster-1.png',
-            ];
-            case Tier.T8: return [
-              'img/loot-tier-potion.png',
-              'img/loot-drop-potion.png',
-            ];
-            case Tier.T9: return [
-              'img/stat-pot-vit.png',
-              'img/stat-pot-wis.png',
-            ];
-            default: throw `Unknown tier: ${tier}`;
-          }
+        getConsumableImage(key) {
+          return `img/${key}.png`;
         }
       }
       
@@ -144,6 +131,10 @@
           const key = this.getQuantityKey();
           return `[Item ${key}]`;
         }
+        
+        // abstract getItemType()
+        
+        // abstract getItemClass()
         
         getQuantityKey() {
           return keys.makeItemQuantityKey(this.tier, this.getItemType(), this.getItemClass());
@@ -181,6 +172,34 @@
         
         getItemClass() {
           return this.itemClass;
+        }
+      }
+      
+      class Consumable extends Item {
+        constructor() {
+          super();
+        }
+      }
+      
+      class StatPot extends Consumable {
+        constructor(stat) {
+          super();
+          this.stat = stat;
+        }
+        
+        getImage() {
+          return images.getConsumableImage(`stat-pot-${this.stat}`);
+        }
+      }
+      
+      class Boost extends Consumable {
+        constructor(name) {
+          super();
+          this.name = name;
+        }
+        
+        getImage() {
+          return images.getConsumableImage(this.name);
         }
       }
       
@@ -239,6 +258,19 @@
         ]),
       ];
       
+      const rewards = {};
+      rewards[Tier.T7] = [
+        new Boost('xp-booster-1'),
+      ];
+      rewards[Tier.T8] = [
+        new Boost('loot-tier-potion'),
+        new Boost('loot-drop-potion'),
+      ];
+      rewards[Tier.T9] = [
+        new StatPot('vit'),
+        new StatPot('wis'),
+      ];
+      
       const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
@@ -276,10 +308,10 @@
           const rewardsEl = rewardsTemplate.querySelector('.rewards');
           rewardsEl.id = keys.makeRewardKey(tier);
           const rewardContainer = rewardsTemplate.querySelector('.rewardContainer');
-          for (const reward of images.getRewardImages(tier)) {
+          for (const reward of rewards[tier]) {
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
-            imageEl.src = reward;
+            imageEl.src = reward.getImage();
             rewardContainer.appendChild(rewardTemplate);
           }
           rowEl.appendChild(rewardsEl);

@@ -9,6 +9,17 @@
       const ENOUGH_ARMOR_DEFAULT = 1;
       const ENOUGH_WEAPON_DEFAULT = 2;
       
+      const Stat = {
+        ATT: 1,
+        SPD: 2,
+        DEF: 3,
+        DEX: 4,
+        VIT: 5,
+        WIS: 6,
+        LIFE: 7,
+        MANA: 8,
+      };
+      
       const Tier = {
         T7: 7,
         T8: 8,
@@ -181,8 +192,22 @@
           this.stat = stat;
         }
         
+        getKey() {
+          switch (this.stat) {
+            case Stat.ATT: return 'att';
+            case Stat.SPD: return 'spd';
+            case Stat.DEF: return 'def';
+            case Stat.DEX: return 'dex';
+            case Stat.VIT: return 'vit';
+            case Stat.WIS: return 'wis';
+            case Stat.LIFE: return 'life';
+            case Stat.MANA: return 'mana';
+            default: throw `Invalid stat: ${this.stat}`;
+          }
+        }
+        
         getImage() {
-          return keys.getImagePath(`stat-pot-${this.stat}`);
+          return keys.getImagePath(`stat-pot-${this.getKey()}`);
         }
       }
       
@@ -261,8 +286,8 @@
         new Boost('loot-drop-potion'),
       ];
       rewards[Tier.T9] = [
-        new StatPot('vit'),
-        new StatPot('wis'),
+        new StatPot(Stat.VIT),
+        new StatPot(Stat.WIS),
       ];
       
       const logger = new Logger();

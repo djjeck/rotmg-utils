@@ -11,6 +11,7 @@ body {
   --item-image-margin: 5px;
   --reward-margin: 20px;
   --main-font-size: 1em;
+  --bubble-padding: 15px;
 }
 
 /** Variables for medium windows */
@@ -20,6 +21,7 @@ body {
     --item-image-margin: 4px;
     --reward-margin: 15px;
     --main-font-size: .8em;
+    --bubble-padding: 12px;
   }
   .githubBanner {
     transform: scale(.7);
@@ -33,6 +35,7 @@ body {
     --item-image-margin: 3px;
     --reward-margin: 10px;
     --main-font-size: .6em;
+    --bubble-padding: 10px;
   }
   .githubBanner {
     transform: scale(.6);
@@ -46,6 +49,7 @@ body {
     --item-image-margin: 2px;
     --reward-margin: 10px;
     --main-font-size: .55em;
+    --bubble-padding: 5px;
   }
   .githubBanner {
     transform: scale(.5);
@@ -83,9 +87,9 @@ body a {
   width: auto;
   flex-shrink: 1;
   flex-grow: 0;
-  padding: 15px 30px;
-  border-radius: 15px;
-  margin-left: 40px;
+  padding: var(--bubble-padding) calc(2 * var(--bubble-padding));
+  border-radius: var(--bubble-padding);
+  margin-left: calc(3 * var(--bubble-padding));
   background-color: var(--color-bubble);
   color: var(--color-red);
   opacity: 0;
@@ -99,10 +103,14 @@ body a {
   content: '';
   position: absolute;
   top: 30%;
-  left: -30px;
+  left: calc(-2 * var(--bubble-padding));
   border-color: transparent var(--color-bubble);
   border-style: solid;
-  border-width: 10px 30px 10px 0;
+  border-width:
+      calc(0.6 * var(--bubble-padding))
+      calc(2 * var(--bubble-padding))
+      calc(0.6 * var(--bubble-padding))
+      0;
 }
 
 .sprite {

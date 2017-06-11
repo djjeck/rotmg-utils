@@ -73,6 +73,11 @@ body a {
   text-decoration: underline;
 }
 
+#unsupportedBrowser {
+  padding: 200px 0;
+  text-align: center;
+}
+
 .tinkererContainer {
   display: flex;
 }

@@ -128,22 +128,16 @@
       }
       
       class Item {
-        constructor(tier, itemType, itemClass) {
+      }
+      
+      class Equipment extends Item {
+        constructor(tier) {
+          super();
           this.tier = tier;
-          this.itemType = itemType;
-          this.itemClass = itemClass;
         }
         
         getTier() {
           return this.tier;
-        }
-        
-        getItemType() {
-          return this.itemType;
-        }
-        
-        getItemClass() {
-          return this.itemClass;
         }
         
         toString() {
@@ -152,11 +146,41 @@
         }
         
         getQuantityKey() {
-          return keys.makeItemQuantityKey(this.tier, this.itemType, this.itemClass);
+          return keys.makeItemQuantityKey(this.tier, this.getItemType(), this.getItemClass());
         }
         
         getImage() {
-          return images.getItemImage(this.tier, this.itemType, this.itemClass);
+          return images.getItemImage(this.tier, this.getItemType(), this.getItemClass());
+        }
+      }
+      
+      class Armor extends Equipment {
+        constructor(tier, itemClass) {
+          super(tier);
+          this.itemClass = itemClass;
+        }
+        
+        getItemType() {
+          return ItemType.ARMOR;
+        }
+        
+        getItemClass() {
+          return this.itemClass;
+        }
+      }
+      
+      class Weapon extends Equipment {
+        constructor(tier, itemClass) {
+          super(tier);
+          this.itemClass = itemClass;
+        }
+        
+        getItemType() {
+          return ItemType.WEAPON;
+        }
+        
+        getItemClass() {
+          return this.itemClass;
         }
       }
       
@@ -181,37 +205,37 @@
       
       const tinkererItems = [
         new ItemRow(Tier.T7, [
-          new Item(Tier.T7, ItemType.ARMOR, ArmorType.LEATHER),
-          new Item(Tier.T7, ItemType.ARMOR, ArmorType.ROBE),
-          new Item(Tier.T7, ItemType.ARMOR, ArmorType.HEAVY),
-          new Item(Tier.T7, ItemType.WEAPON, WeaponType.DAGGER),
-          new Item(Tier.T7, ItemType.WEAPON, WeaponType.BOW),
-          new Item(Tier.T7, ItemType.WEAPON, WeaponType.STAFF),
-          new Item(Tier.T7, ItemType.WEAPON, WeaponType.WAND),
-          new Item(Tier.T7, ItemType.WEAPON, WeaponType.SWORD),
-          new Item(Tier.T7, ItemType.WEAPON, WeaponType.KATANA),
+          new Armor(Tier.T7, ArmorType.LEATHER),
+          new Armor(Tier.T7, ArmorType.ROBE),
+          new Armor(Tier.T7, ArmorType.HEAVY),
+          new Weapon(Tier.T7, WeaponType.DAGGER),
+          new Weapon(Tier.T7, WeaponType.BOW),
+          new Weapon(Tier.T7, WeaponType.STAFF),
+          new Weapon(Tier.T7, WeaponType.WAND),
+          new Weapon(Tier.T7, WeaponType.SWORD),
+          new Weapon(Tier.T7, WeaponType.KATANA),
         ]),
         new ItemRow(Tier.T8, [
-          new Item(Tier.T8, ItemType.ARMOR, ArmorType.LEATHER),
-          new Item(Tier.T8, ItemType.ARMOR, ArmorType.ROBE),
-          new Item(Tier.T8, ItemType.ARMOR, ArmorType.HEAVY),
-          new Item(Tier.T8, ItemType.WEAPON, WeaponType.DAGGER),
-          new Item(Tier.T8, ItemType.WEAPON, WeaponType.BOW),
-          new Item(Tier.T8, ItemType.WEAPON, WeaponType.STAFF),
-          new Item(Tier.T8, ItemType.WEAPON, WeaponType.WAND),
-          new Item(Tier.T8, ItemType.WEAPON, WeaponType.SWORD),
-          new Item(Tier.T8, ItemType.WEAPON, WeaponType.KATANA),
+          new Armor(Tier.T8, ArmorType.LEATHER),
+          new Armor(Tier.T8, ArmorType.ROBE),
+          new Armor(Tier.T8, ArmorType.HEAVY),
+          new Weapon(Tier.T8, WeaponType.DAGGER),
+          new Weapon(Tier.T8, WeaponType.BOW),
+          new Weapon(Tier.T8, WeaponType.STAFF),
+          new Weapon(Tier.T8, WeaponType.WAND),
+          new Weapon(Tier.T8, WeaponType.SWORD),
+          new Weapon(Tier.T8, WeaponType.KATANA),
         ]),
         new ItemRow(Tier.T9, [
-          new Item(Tier.T9, ItemType.ARMOR, ArmorType.LEATHER),
-          new Item(Tier.T9, ItemType.ARMOR, ArmorType.ROBE),
-          new Item(Tier.T9, ItemType.ARMOR, ArmorType.HEAVY),
-          new Item(Tier.T9, ItemType.WEAPON, WeaponType.DAGGER),
-          new Item(Tier.T9, ItemType.WEAPON, WeaponType.BOW),
-          new Item(Tier.T9, ItemType.WEAPON, WeaponType.STAFF),
-          new Item(Tier.T9, ItemType.WEAPON, WeaponType.WAND),
-          new Item(Tier.T9, ItemType.WEAPON, WeaponType.SWORD),
-          new Item(Tier.T9, ItemType.WEAPON, WeaponType.KATANA),
+          new Armor(Tier.T9, ArmorType.LEATHER),
+          new Armor(Tier.T9, ArmorType.ROBE),
+          new Armor(Tier.T9, ArmorType.HEAVY),
+          new Weapon(Tier.T9, WeaponType.DAGGER),
+          new Weapon(Tier.T9, WeaponType.BOW),
+          new Weapon(Tier.T9, WeaponType.STAFF),
+          new Weapon(Tier.T9, WeaponType.WAND),
+          new Weapon(Tier.T9, WeaponType.SWORD),
+          new Weapon(Tier.T9, WeaponType.KATANA),
         ]),
       ];
       

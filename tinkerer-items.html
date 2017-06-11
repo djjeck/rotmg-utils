@@ -378,10 +378,10 @@
       }
       
       function decorateRewards(tier) {
-        const itemKeys = [
-          ...Object.values(ArmorType).map(armorType => keys.makeItemQuantityKey(tier, ItemType.ARMOR, armorType)),
-          ...Object.values(WeaponType).map(weaponType => keys.makeItemQuantityKey(tier, ItemType.WEAPON, weaponType))
-        ];
+        const itemKeys = tinkererItems.
+            filter(row => row.getTier() == tier)[0].
+            getItems().
+            map(item => item.getQuantityKey());
         
         const ownedItems = itemKeys.filter(key => storage.readNumber(key) > 0).length;
         const totalItems = itemKeys.length;

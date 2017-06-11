@@ -154,6 +154,10 @@
         getQuantityKey() {
           return keys.makeItemQuantityKey(this.tier, this.itemType, this.classType);
         }
+        
+        getImage() {
+          return images.getItemImage(this.tier, this.itemType, this.classType);
+        }
       }
       
       class ItemRow {
@@ -240,9 +244,7 @@
           const tier = row.getTier();
           
           for (const item of row.getItems()) {
-            const itemType = item.getItemType();
-            const classType = item.getClassType();
-            rowEl.appendChild(renderItem(tier, itemType, classType));
+            rowEl.appendChild(renderItem(item));
           }
           
           // Render rewards.
@@ -264,9 +266,12 @@
         }
       }
       
-      function renderItem(tier, type, itemClass) {
-        const key = keys.makeItemQuantityKey(tier, type, itemClass);
-        const src = images.getItemImage(tier, type, itemClass);
+      function renderItem(item) {
+        const tier = item.getTier();
+        const type = item.getItemType();
+        const key = item.getQuantityKey();
+        const src = item.getImage();
+        
         let quantity = storage.readNumber(key);
         const id = `item-${key}`;
         

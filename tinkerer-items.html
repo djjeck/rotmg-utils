@@ -101,15 +101,8 @@
           }
           return `enough-${typeKey}`;
         }
-      }
-      
-      class Images {
-        getItemImage(tier, type, itemClass) {
-          const imageKey = keys.makeItemImageKey(tier, type, itemClass);
-          return `img/${imageKey}.png`;
-        }
         
-        getConsumableImage(key) {
+        getImagePath(key) {
           return `img/${key}.png`;
         }
       }
@@ -141,7 +134,8 @@
         }
         
         getImage() {
-          return images.getItemImage(this.tier, this.getItemType(), this.getItemClass());
+          const imageKey = keys.makeItemImageKey(this.tier, this.getItemType(), this.getItemClass());
+          return keys.getImagePath(imageKey);
         }
       }
       
@@ -188,7 +182,7 @@
         }
         
         getImage() {
-          return images.getConsumableImage(`stat-pot-${this.stat}`);
+          return keys.getImagePath(`stat-pot-${this.stat}`);
         }
       }
       
@@ -199,7 +193,7 @@
         }
         
         getImage() {
-          return images.getConsumableImage(this.name);
+          return keys.getImagePath(this.name);
         }
       }
       
@@ -274,7 +268,6 @@
       const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
-      const images = new Images();
       
       logger.setLogLevel(LogLevel[storage.readString('log-level', 'INFO')]);
       

@@ -21,11 +21,18 @@ const ArmorType = makeEnum(['LEATHER', 'ROBE', 'HEAVY']);
 const WeaponType = makeEnum(['DAGGER', 'BOW', 'STAFF', 'WAND', 'SWORD', 'KATANA']);
 
 class Item {
+  constructor(info = {}) {
+    this.info = info;
+  }
+  
+  getInfo() {
+    return this.info;
+  }
 }
 
 class Equipment extends Item {
-  constructor(tier) {
-    super();
+  constructor(tier, info) {
+    super(info);
     this.tier = tier;
   }
   
@@ -53,8 +60,8 @@ class Equipment extends Item {
 }
 
 class Armor extends Equipment {
-  constructor(tier, itemClass) {
-    super(tier);
+  constructor(tier, itemClass, info) {
+    super(tier, info);
     this.itemClass = itemClass;
   }
   
@@ -68,8 +75,8 @@ class Armor extends Equipment {
 }
 
 class Weapon extends Equipment {
-  constructor(tier, itemClass) {
-    super(tier);
+  constructor(tier, itemClass, info) {
+    super(tier, info);
     this.itemClass = itemClass;
   }
   
@@ -83,14 +90,14 @@ class Weapon extends Equipment {
 }
 
 class Consumable extends Item {
-  constructor() {
-    super();
+  constructor(info) {
+    super(info);
   }
 }
 
 class StatPot extends Consumable {
-  constructor(stat) {
-    super();
+  constructor(stat, info) {
+    super(info);
     this.stat = stat;
   }
   
@@ -104,8 +111,8 @@ class StatPot extends Consumable {
 }
 
 class Boost extends Consumable {
-  constructor(name) {
-    super();
+  constructor(name, info) {
+    super(info);
     this.name = name;
   }
   

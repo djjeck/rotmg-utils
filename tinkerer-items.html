@@ -87,45 +87,45 @@
       
       const tinkererItems = [
         new ItemRow(Tier.T7, [
-          new Armor(Tier.T7, ArmorType.LEATHER),
-          new Armor(Tier.T7, ArmorType.ROBE),
-          new Armor(Tier.T7, ArmorType.HEAVY),
-          new Weapon(Tier.T7, WeaponType.DAGGER),
-          new Weapon(Tier.T7, WeaponType.BOW),
-          new Weapon(Tier.T7, WeaponType.STAFF),
-          new Weapon(Tier.T7, WeaponType.WAND),
-          new Weapon(Tier.T7, WeaponType.SWORD),
-          new Weapon(Tier.T7, WeaponType.KATANA),
+          new Armor (Tier.T7, ArmorType.LEATHER, {name: 'Wyvern Skin Armor',    feedPower: 55}),
+          new Armor (Tier.T7, ArmorType.ROBE,    {name: 'Robe of the Invoker',  feedPower: 55}),
+          new Armor (Tier.T7, ArmorType.HEAVY,   {name: 'Mithril Chainmail',    feedPower: 55}),
+          new Weapon(Tier.T7, WeaponType.DAGGER, {name: 'Mithril Dagger',       feedPower: 70}),
+          new Weapon(Tier.T7, WeaponType.BOW,    {name: 'Heavy Crossbow',       feedPower: 70}),
+          new Weapon(Tier.T7, WeaponType.STAFF,  {name: 'Staff of Destruction', feedPower: 70}),
+          new Weapon(Tier.T7, WeaponType.WAND,   {name: 'Wand of Arcane Flame', feedPower: 70}),
+          new Weapon(Tier.T7, WeaponType.SWORD,  {name: 'Golden Sword',         feedPower: 70}),
+          new Weapon(Tier.T7, WeaponType.KATANA, {name: 'Buster Katana',        feedPower: 70}),
         ], [
-          new Boost('xp-booster-1'),
+          new Boost('xp-booster-1', {name: 'XP Booster'}),
         ]),
         new ItemRow(Tier.T8, [
-          new Armor(Tier.T8, ArmorType.LEATHER),
-          new Armor(Tier.T8, ArmorType.ROBE),
-          new Armor(Tier.T8, ArmorType.HEAVY),
-          new Weapon(Tier.T8, WeaponType.DAGGER),
-          new Weapon(Tier.T8, WeaponType.BOW),
-          new Weapon(Tier.T8, WeaponType.STAFF),
-          new Weapon(Tier.T8, WeaponType.WAND),
-          new Weapon(Tier.T8, WeaponType.SWORD),
-          new Weapon(Tier.T8, WeaponType.KATANA),
+          new Armor (Tier.T8, ArmorType.LEATHER, {name: 'Studded Leather Armor',   feedPower: 77}),
+          new Armor (Tier.T8, ArmorType.ROBE,    {name: 'Robe of the Illusionist', feedPower: 77}),
+          new Armor (Tier.T8, ArmorType.HEAVY,   {name: 'Mithril Armor',           feedPower: 77}),
+          new Weapon(Tier.T8, WeaponType.DAGGER, {name: 'Fire Dagger',             feedPower: 100}),
+          new Weapon(Tier.T8, WeaponType.BOW,    {name: 'Golden Bow',              feedPower: 100}),
+          new Weapon(Tier.T8, WeaponType.STAFF,  {name: 'Staff of Horror',         feedPower: 100}),
+          new Weapon(Tier.T8, WeaponType.WAND,   {name: 'Wand of Death',           feedPower: 100}),
+          new Weapon(Tier.T8, WeaponType.SWORD,  {name: 'Ravenheart Sword',        feedPower: 100}),
+          new Weapon(Tier.T8, WeaponType.KATANA, {name: 'Demon Edge',              feedPower: 100}),
         ], [
-          new Boost('loot-tier-potion'),
-          new Boost('loot-drop-potion'),
+          new Boost('loot-tier-potion', {name: 'Loot Tier Potion'}),
+          new Boost('loot-drop-potion', {name: 'Loot Drop Potion'}),
         ]),
         new ItemRow(Tier.T9, [
-          new Armor(Tier.T9, ArmorType.LEATHER),
-          new Armor(Tier.T9, ArmorType.ROBE),
-          new Armor(Tier.T9, ArmorType.HEAVY),
-          new Weapon(Tier.T9, WeaponType.DAGGER),
-          new Weapon(Tier.T9, WeaponType.BOW),
-          new Weapon(Tier.T9, WeaponType.STAFF),
-          new Weapon(Tier.T9, WeaponType.WAND),
-          new Weapon(Tier.T9, WeaponType.SWORD),
-          new Weapon(Tier.T9, WeaponType.KATANA),
+          new Armor (Tier.T9, ArmorType.LEATHER, {name: 'Drake Hide Armor',         feedPower: 110}),
+          new Armor (Tier.T9, ArmorType.ROBE,    {name: 'Robe of the Master',       feedPower: 110}),
+          new Armor (Tier.T9, ArmorType.HEAVY,   {name: 'Dragonscale Armor',        feedPower: 110}),
+          new Weapon(Tier.T9, WeaponType.DAGGER, {name: 'Ragetalon Dagger',         feedPower: 145}),
+          new Weapon(Tier.T9, WeaponType.BOW,    {name: 'Verdant Bow',              feedPower: 145}),
+          new Weapon(Tier.T9, WeaponType.STAFF,  {name: 'Staff of Necrotic Arcana', feedPower: 145}),
+          new Weapon(Tier.T9, WeaponType.WAND,   {name: 'Wand of Deep Sorcery',     feedPower: 145}),
+          new Weapon(Tier.T9, WeaponType.SWORD,  {name: 'Dragonsoul Sword',         feedPower: 145}),
+          new Weapon(Tier.T9, WeaponType.KATANA, {name: 'Jewel Eye Katana',         feedPower: 145}),
         ], [
-          new StatPot(Stat.VIT),
-          new StatPot(Stat.WIS),
+          new StatPot(Stat.VIT, {name: 'Potion of Vitality'}),
+          new StatPot(Stat.WIS, {name: 'Potion of Wisdom'}),
         ]),
       ];
       
@@ -169,6 +169,7 @@
             const rewardTemplate = document.importNode(document.querySelector('#rewardTemplate').content, true);
             const imageEl = rewardTemplate.querySelector('.rewardImage');
             imageEl.src = reward.getImage();
+            imageEl.alt = reward.getInfo().name;
             rewardContainer.appendChild(rewardTemplate);
           }
           rowEl.appendChild(rewardsEl);
@@ -184,6 +185,7 @@
         const type = item.getItemType();
         const key = item.getQuantityKey();
         const src = item.getImage();
+        const name = item.getInfo().name;
         
         let quantity = storage.readNumber(key);
         const id = `item-${key}`;
@@ -224,6 +226,7 @@
         };
         
         imageEl.src = src;
+        imageEl.alt = name;
         quantityLessEl.onclick = decreaseQuantity;
         quantityMoreEl.onclick = increaseQuantity;
         updateQuantity();

@@ -11,40 +11,19 @@
       
       class Keys {
         getTierKey(tier) {
-          let tierKey;
-          switch (tier) {
-            case Tier.T7: return 't7';
-            case Tier.T8: return 't8';
-            case Tier.T9: return 't9';
-            default: throw `Invalid tier: ${tier}`;
-          }
+          return Tier.toString(tier);
         }
         
         makeItemKey(tier, type, itemClass) {
           const tierKey = this.getTierKey(tier);
-          let typeKey;
+          const typeKey = ItemType.toString(type);
           let classKey;
           switch (type) {
             case ItemType.ARMOR:
-              typeKey = 'armor';
-              switch (itemClass) {
-                case ArmorType.LEATHER: classKey = 'leather'; break;
-                case ArmorType.ROBE: classKey = 'robe'; break;
-                case ArmorType.HEAVY: classKey = 'heavy'; break;
-                default: throw `Invalid armor class: ${itemClass}`;
-              }
+              classKey = ArmorType.toString(itemClass);
               break;
             case ItemType.WEAPON:
-              typeKey = 'weapon';
-              switch (itemClass) {
-                case WeaponType.DAGGER: classKey = 'dagger'; break;
-                case WeaponType.BOW: classKey = 'bow'; break;
-                case WeaponType.STAFF: classKey = 'staff'; break;
-                case WeaponType.WAND: classKey = 'wand'; break;
-                case WeaponType.SWORD: classKey = 'sword'; break;
-                case WeaponType.KATANA: classKey = 'katana'; break;
-                default: throw `Invalid armor class: ${itemClass}`;
-              }
+              classKey = WeaponType.toString(itemClass);
               break;
             default: throw `Invalid type: ${type}`;
           }
@@ -67,12 +46,7 @@
         }
         
         makeConfigKeyEnough(type) {
-          let typeKey;
-          switch (type) {
-            case ItemType.ARMOR: typeKey = 'armors'; break;
-            case ItemType.WEAPON: typeKey = 'weapons'; break;
-            default: throw `Invalid type: ${type}`;
-          }
+          const typeKey = ItemType.toString(type) + 's';
           return `enough-${typeKey}`;
         }
         

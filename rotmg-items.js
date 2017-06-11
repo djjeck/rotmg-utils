@@ -95,17 +95,7 @@ class StatPot extends Consumable {
   }
   
   getKey() {
-    switch (this.stat) {
-      case Stat.ATT: return 'att';
-      case Stat.SPD: return 'spd';
-      case Stat.DEF: return 'def';
-      case Stat.DEX: return 'dex';
-      case Stat.VIT: return 'vit';
-      case Stat.WIS: return 'wis';
-      case Stat.LIFE: return 'life';
-      case Stat.MANA: return 'mana';
-      default: throw `Invalid stat: ${this.stat}`;
-    }
+    return Stat.toString(this.stat);
   }
   
   getImage() {

@@ -100,7 +100,11 @@
           new Weapon(Tier.T7, WeaponType.SWORD,  {name: 'Golden Sword',         feedPower: 70}),
           new Weapon(Tier.T7, WeaponType.KATANA, {name: 'Buster Katana',        feedPower: 70}),
         ], [
-          new Boost('xp-booster-1', {name: 'XP Booster', feedPower: 110}),
+          new Boost('xp-booster-1', {
+            name: 'XP Booster',
+            feedPower: 110,
+            description: 'Get 2x all XP gained for one hour!',
+          }),
         ]),
         new ItemRow(Tier.T8, [
           new Armor (Tier.T8, ArmorType.LEATHER, {name: 'Studded Leather Armor',   feedPower: 77}),
@@ -113,8 +117,16 @@
           new Weapon(Tier.T8, WeaponType.SWORD,  {name: 'Ravenheart Sword',        feedPower: 100}),
           new Weapon(Tier.T8, WeaponType.KATANA, {name: 'Demon Edge',              feedPower: 100}),
         ], [
-          new Boost('loot-tier-potion', {name: 'Loot Tier Potion', feedPower: 150}),
-          new Boost('loot-drop-potion', {name: 'Loot Drop Potion', feedPower: 150}),
+          new Boost('loot-tier-potion', {
+            name: 'Loot Tier Potion',
+            feedPower: 150,
+            description: 'A potion that boosts the tier level of dropped loot. Up to +3 tiers! Lasts 30 minutes.',
+          }),
+          new Boost('loot-drop-potion', {
+            name: 'Loot Drop Potion',
+            feedPower: 150,
+            description: 'A potion that causes enemies to drop more loot! Lasts 30 minutes.',
+          }),
         ]),
         new ItemRow(Tier.T9, [
           new Armor (Tier.T9, ArmorType.LEATHER, {name: 'Drake Hide Armor',         feedPower: 110}),
@@ -127,8 +139,16 @@
           new Weapon(Tier.T9, WeaponType.SWORD,  {name: 'Dragonsoul Sword',         feedPower: 145}),
           new Weapon(Tier.T9, WeaponType.KATANA, {name: 'Jewel Eye Katana',         feedPower: 145}),
         ], [
-          new StatPot(Stat.VIT, {name: 'Potion of Vitality', feedPower: 150}),
-          new StatPot(Stat.WIS, {name: 'Potion of Wisdom', feedPower: 150}),
+          new StatPot(Stat.VIT, {
+            name: 'Potion of Vitality',
+            feedPower: 150,
+            description: 'A potion that permanently increases vitality.'
+          }),
+          new StatPot(Stat.WIS, {
+            name: 'Potion of Wisdom',
+            feedPower: 150,
+            description: 'A potion that permanently increases wisdom.'
+          }),
         ]),
       ];
       
@@ -152,17 +172,20 @@
         const image = item.getImage();
         const name = item.getInfo().name;
         const tier = (item instanceof Equipment) ? Tier.toString(item.getTier()).toUpperCase() : '';
+        const description = item.getInfo().description || '';
         const feedPower = item.getInfo().feedPower || 0;
         
         const imageEl = card.querySelector('.image');
         const nameEl = card.querySelector('.name');
         const tierEl = card.querySelector('.tier');
+        const descriptionEl = card.querySelector('.description');
         const detailsEl = card.querySelector('.details');
         
         imageEl.src = image;
         imageEl.alt = name;
         nameEl.innerText = name;
         tierEl.innerText = tier;
+        descriptionEl.innerText = description;
         const detailsText = feedPower > 0 ? `Feed power: ${feedPower}` : '';
         detailsEl.style.display = detailsText ? 'block' : 'none';
         detailsEl.innerText = detailsText;
@@ -498,6 +521,7 @@
         <img class="image" />
         <span class="name"></span>
         <span class="tier"></span>
+        <div class="description"></div>
       </div>
       <div class="section details">
       </div>

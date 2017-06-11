@@ -303,13 +303,14 @@ body a {
 #hoverInfo {
   position: fixed;
   
-  width: 200px;
+  width: 250px;
   
   padding: 10px;
   border: 2px solid #888;
   background-color: var(--color-grey-background);
   border-radius: 10px;
   color: #D1D1D1;
+  font-size: 15px;
 }
 
 #hoverInfo .section {
@@ -324,6 +325,7 @@ body a {
 
 #hoverInfo .section.header {
   display: flex;
+  flex-wrap: wrap;
 }
 
 #hoverInfo .section:last-of-type {
@@ -332,13 +334,22 @@ body a {
 
 #hoverInfo .name {
   flex-grow: 1;
-  padding: 0px 5px;
-  font-weight: bold;
+  max-width: 150px;
+  padding: 0px 15px 0px 5px;
+}
+
+#hoverInfo .name,
+#hoverInfo .tier {
+  font-size: 1.2em;
+  font-weight: 500;
 }
 
 #hoverInfo .tier {
+  flex-grow: 1;
+  text-align: right;
 }
 
-#hoverInfo .details {
-  color: #D1D1D1;
+#hoverInfo .description {
+  width: 100%;
+  padding-top: 8px;
 }

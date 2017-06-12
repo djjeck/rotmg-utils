@@ -235,6 +235,7 @@ body a {
 #config .label {
   display: inline-block;
   width: 200px;
+  vertical-align: top;
 }
 
 #config input {

@@ -124,6 +124,12 @@ body a {
   height: var(--sprite-size);
 }
 
+.sprite.emoji {
+  width: 32px;
+  height: 32px;
+  vertical-align: bottom;
+}
+
 .module {
   display: block;
   margin: 20px auto;
@@ -239,9 +245,10 @@ body a {
   text-align: right;
 }
 
-#config input:disabled {
-  color: #000000;
-  border: none;
+#config-vault-chests-visual {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 #export button {

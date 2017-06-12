@@ -18,6 +18,8 @@
       const HOVER_INFO_X_OFFSET = 5;
       const HOVER_INFO_Y_OFFSET = 25;
       
+      const EMOJI_SIZE = 32;
+      
       class Keys {
         getTierKey(tier) {
           return Tier.toString(tier);
@@ -340,12 +342,12 @@
         enoughWeaponInput.value = enoughWeapon;
         updateVaultSlotsConfig();
         
-        enoughArmorInput.onclick = () => {
+        enoughArmorInput.onchange = () => {
           storage.writeNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
-        enoughWeaponInput.onclick = () => {
+        enoughWeaponInput.onchange = () => {
           storage.writeNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
@@ -431,11 +433,26 @@
         const vaultSlots = 3 * (
           storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
           storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
+        const vaultChests = vaultSlots / 8;
         
-        const vaultChestsInput = document.getElementById('config-vault-chests');
-        const vaultSlotsInput = document.getElementById('config-vault-slots');
-        vaultChestsInput.value = formatFloat(vaultSlots / 8);
-        vaultSlotsInput.value = vaultSlots;
+        const vaultChestsVisualEl = document.getElementById('config-vault-chests-visual');
+        const vaultChestsEl = document.getElementById('config-vault-chests');
+        const vaultSlotsEl = document.getElementById('config-vault-slots');
+        const visualImages = [
+          'img/vault-chest-unlocker.png',
+          'img/character-slot-unlocker.png',
+          'img/backpack.png',
+        ];
+        vaultChestsVisualEl.innerHTML = '';
+        for (let i = 0; i < vaultChests; i++) {
+          const image = document.createElement('img');
+          image.className = 'emoji sprite';
+          image.src = visualImages[i % visualImages.length];
+          vaultChestsVisualEl.appendChild(image);
+        }
+        vaultChestsVisualEl.style.width = `${vaultChests * EMOJI_SIZE}px`;
+        vaultChestsEl.innerText = formatFloat(vaultChests);
+        vaultSlotsEl.innerText = vaultSlots;
       }
       
       function decorateQuantities(type) {
@@ -518,12 +535,11 @@
         </label>
       
         <label>
-          <span class="label">Vault chests</span>
-          <input id="config-vault-chests" type="number" min="1" max="80" step="any" disabled="disabled" />
-        </label>
-        <label>
-          <span class="label">Vault slots</span>
-          <input id="config-vault-slots" type="number" min="1" max="640" step="1" disabled="disabled" />
+          <span class="label">
+            Space occupied
+          </span>
+          <span id="config-vault-chests-visual"></span>
+          (<span id="config-vault-chests"></span>, <span id="config-vault-slots"></span> slots)
         </label>
       </div>
       <div id="exportContainer" class="module">

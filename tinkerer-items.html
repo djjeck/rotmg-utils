@@ -342,12 +342,12 @@
         enoughWeaponInput.value = enoughWeapon;
         updateVaultSlotsConfig();
         
-        enoughArmorInput.onchange = () => {
+        enoughArmorInput.onclick = enoughArmorInput.onchange = () => {
           storage.writeNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
-        enoughWeaponInput.onchange = () => {
+        enoughWeaponInput.onclick = enoughWeaponInput.onchange = () => {
           storage.writeNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
@@ -448,9 +448,16 @@
           const image = document.createElement('img');
           image.className = 'emoji sprite';
           image.src = visualImages[i % visualImages.length];
-          vaultChestsVisualEl.appendChild(image);
+          if (vaultChests - i < 1) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'fractionalWrapper';
+            wrapper.style.width = `${(vaultChests - i) * EMOJI_SIZE}px`;
+            wrapper.appendChild(image);
+            vaultChestsVisualEl.appendChild(wrapper);
+          } else {
+            vaultChestsVisualEl.appendChild(image);
+          }
         }
-        vaultChestsVisualEl.style.width = `${vaultChests * EMOJI_SIZE}px`;
         vaultChestsEl.innerText = formatFloat(vaultChests);
         vaultSlotsEl.innerText = vaultSlots;
       }
@@ -534,7 +541,7 @@
           <input id="config-enough-weapons" type="number" min="1" max="99" step="1" />
         </label>
       
-        <label>
+        <label class="spaceOccupied">
           <span class="label">
             Space occupied
           </span>

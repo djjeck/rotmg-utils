@@ -229,7 +229,7 @@ body a {
 
 #config label {
   display: block;
-  margin: 4px;
+  margin: 6px;
 }
 
 #config .label {
@@ -247,7 +247,11 @@ body a {
 
 #config-vault-chests-visual {
   display: inline-block;
-  white-space: nowrap;
+  width: 160px; /* 5 chests, and also makes a nice pattern */
+}
+
+#config-vault-chests-visual .fractionalWrapper {
+  display: inline-block;
   overflow: hidden;
 }
 

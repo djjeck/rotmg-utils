@@ -5,6 +5,12 @@
 class Storage {
   constructor() {
     this.cache = {};
+    
+    // Assuming there is only one instance of Storage.
+    window.manualOverride = (key, value) => {
+      this.writeString(key, value);
+      return `Set the flag "${key}" with value "${value}"`;
+    };
   }
   
   readBoolean(key, defaultValue = false) {

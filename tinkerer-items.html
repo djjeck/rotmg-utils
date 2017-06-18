@@ -428,7 +428,7 @@
         
         document.getElementById('exportContainer').appendChild(exportEl);
         
-        const googleLoginEnabled = false; // TODO
+        const googleLoginEnabled = storage.readBoolean('experimental_use-google-login', false);
         if (googleLoginEnabled) {
           // The button must be initialized after the element is added to the DOM.
           initGoogleSignIn();

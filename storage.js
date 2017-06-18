@@ -56,6 +56,7 @@ class Storage {
     // This reduces the discoverability of the flags, for example from the
     // exported files. 
     if (
+      (key.startsWith('experimental_') && value == false) ||
       (key == 'log-level' && value == 'INFO') ||
       // This flag is really only meant for excluding myself (djjeck)
       // from Google Analytics.

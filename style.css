@@ -254,6 +254,7 @@ body a {
 #config-vault-chests-visual .fractionalWrapper {
   display: inline-block;
   overflow: hidden;
+  vertical-align: top;
 }
 
 #export button {

@@ -427,6 +427,45 @@
         };
         
         document.getElementById('exportContainer').appendChild(exportEl);
+        
+        const googleLoginEnabled = false; // TODO
+        if (googleLoginEnabled) {
+          // The button must be initialized after the element is added to the DOM.
+          initGoogleSignIn();
+        }
+      }
+      
+      function initGoogleSignIn() {
+        gapi.load('auth2', () => {
+          const auth2 = gapi.auth2.init({
+            // RotMG utils web.
+            client_id: '127841094108-km6bcils31kjpqk19i3pv4lsp086kmma.apps.googleusercontent.com',
+            cookiepolicy: 'single_host_origin',
+          });
+          gapi.signin2.render('googleSignIn', {
+            'scope': 'profile email',
+            'height': 23, // px. Matches other buttons.
+            'onsuccess': googleUser => {
+              const profile = googleUser.getBasicProfile();
+              const id = profile.getId();
+              logger.log(LogLevel.INFO, `Logged in:
+                ID: ${profile.getId()}
+                Name: ${profile.getName()}
+                Image URL: ${profile.getImageUrl()}
+                Email: ${profile.getEmail()}`);
+                
+                const xhr = new XMLHttpRequest();
+                xhr.addEventListener('load', () => {
+                  logger.log(LogLevel.INFO, xhr.responseText);
+                });
+                xhr.open('GET', `login.php?id=${id}`);
+                xhr.send();
+            },
+            'onfailure': error => {
+              logger.log(LogLevel.ERROR, error);
+            },
+          });
+        });
       }
       
       function updateVaultSlotsConfig() {
@@ -513,6 +552,7 @@
         logger.log(LogLevel.WARNING, 'Google Analytics is disabled');
       }
     </script>
+    <script type="text/javascript" src="https://apis.google.com/js/platform.js" async defer></script>
   </head>
   <body onload="bodyLoad();">
     <div id="unsupportedBrowser" style="display: block;">
@@ -611,9 +651,10 @@
       
       <template id="exportTemplate">
         <div id="export">
-          <button id="exportButton">Export</button>
-          <button id="importButton">Import</button>
-          <button id="resetButton">Reset data</button>
+          <div class="button" id="googleSignIn">Sign in with Google</div>
+          <button class="button" id="exportButton">Export</button>
+          <button class="button" id="importButton">Import</button>
+          <button class="button" id="resetButton">Reset data</button>
         </div>
       </template>
     </div>

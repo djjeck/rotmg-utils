@@ -432,6 +432,9 @@
         if (googleLoginEnabled) {
           // The button must be initialized after the element is added to the DOM.
           initGoogleSignIn();
+        } else {
+          const googleSignInButton = document.getElementById('googleSignIn');
+          googleSignInButton.parentNode.removeChild(googleSignInButton);
         }
       }
       
@@ -651,7 +654,7 @@
       
       <template id="exportTemplate">
         <div id="export">
-          <div class="button" id="googleSignIn">Sign in with Google</div>
+          <div class="button" id="googleSignIn"></div>
           <button class="button" id="exportButton">Export</button>
           <button class="button" id="importButton">Import</button>
           <button class="button" id="resetButton">Reset data</button>

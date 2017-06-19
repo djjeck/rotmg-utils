@@ -26,6 +26,15 @@ class Logger {
     }
   }
   
+  getLogLevelName(level) {
+    for (const name in LogLevel) {
+      if (LogLevel[name] == level) {
+        return name;
+      }
+    }
+    return `Log level ${level}`;
+  }
+  
   setLogLevel(level) {
     this.logLevel = level;
   }
@@ -37,7 +46,7 @@ class Logger {
       }
       
       // Always write on the console.
-      console.log(message);
+      console.log(`[${this.getLogLevelName(level)}] ${message}`);
     }
   }
   

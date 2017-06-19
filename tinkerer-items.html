@@ -452,27 +452,85 @@
               const profile = googleUser.getBasicProfile();
               const id = profile.getId();
               const idToken = googleUser.getAuthResponse().id_token;
-              logger.log(LogLevel.INFO, `Logged in:
-                ID: ${id}
-                ID Token: ${idToken}
-                Name: ${profile.getName()}
-                Image URL: ${profile.getImageUrl()}
-                Email: ${profile.getEmail()}`);
+              logger.log(LogLevel.INFO, `Logged in ${id} (${profile.getName()} <${profile.getEmail()}>)`);
               
-              const xhr = new XMLHttpRequest();
-              xhr.addEventListener('load', () => {
-                logger.log(LogLevel.INFO, xhr.responseText);
-              });
-              xhr.open('POST', 'login.php');
-              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-              xhr.send(`idtoken=${idToken}`);
-              xhr.send();
+              const exportButtonEl = document.createElement('button');
+              exportButtonEl.className = 'button';
+              exportButtonEl.innerText = 'Export to cloud';
+              exportButtonEl.onclick = () => {
+                writeToServer({
+                  idToken: idToken,
+                  key: 'tinkerer-items',
+                  data: JSON.stringify(storage.dumpCache()),
+                }, text => {
+                  console.log(LogLevel.INFO, 'Exported data into the cloud');
+                });
+              };
+              
+              const importButtonEl = document.createElement('button');
+              importButtonEl.className = 'button';
+              importButtonEl.innerText = 'Import from cloud';
+              importButtonEl.onclick = () => {
+                readFromServer({
+                  idToken: idToken,
+                  key: 'tinkerer-items',
+                }, text => {
+                  console.log(LogLevel.DEBUG, `Got data from server: ${text}`);
+                  // TODO make sure the file actually is a cache dump.
+                  storage.importCache(text);
+                  console.log(LogLevel.INFO, 'Imported data from the cloud');
+                  // Refresh the whole page, i.e. the lazy way.
+                  window.location.reload();
+                  
+                });
+              };
+              
+              const exportContainerEl = document.getElementById('export');
+              exportContainerEl.appendChild(exportButtonEl);
+              exportContainerEl.appendChild(importButtonEl);
             },
             'onfailure': error => {
               logger.log(LogLevel.ERROR, error);
             },
           });
         });
+      }
+      
+      function readFromServer(data, callback) {
+        const xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', () => {
+          if (xhr.status == 200) {
+            callback(xhr.responseText);
+          } else {
+            logger.log(LogLevel.ERROR, `Error ${xhr.status}\n${xhr.responseText}`);
+          }
+        });
+        const params = [];
+        for (const key in data) {
+          const value = data[key];
+          params.push(`${key}=${value}`);
+        }
+        xhr.open('GET', 'read_data.php?' + params.join('&'));
+        xhr.send();
+      }
+      
+      function writeToServer(data, callback) {
+        const xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', () => {
+          if (xhr.status == 200) {
+            callback(xhr.responseText);
+          } else {
+            logger.log(LogLevel.ERROR, `Error ${xhr.status}\n${xhr.responseText}`);
+          }
+        });
+        xhr.open('POST', 'write_data.php');
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        const params = [];
+        for (const key in data) {
+          const value = data[key];
+          params.push(`${key}=${value}`);
+        }
+        xhr.send(params.join('&'));        
       }
       
       function updateVaultSlotsConfig() {

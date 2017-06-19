@@ -73,6 +73,7 @@ class Storage {
     logger.log(LogLevel.DEBUG, `writing ${key} <- ${value}`);
     this.cache[key] = value;
     localStorage.setItem(key, value);
+    localStorage.setItem('last-modified', new Date().toISOString());
   }
   
   clear() {

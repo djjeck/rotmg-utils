@@ -451,18 +451,22 @@
             'onsuccess': googleUser => {
               const profile = googleUser.getBasicProfile();
               const id = profile.getId();
+              const idToken = googleUser.getAuthResponse().id_token;
               logger.log(LogLevel.INFO, `Logged in:
-                ID: ${profile.getId()}
+                ID: ${id}
+                ID Token: ${idToken}
                 Name: ${profile.getName()}
                 Image URL: ${profile.getImageUrl()}
                 Email: ${profile.getEmail()}`);
-                
-                const xhr = new XMLHttpRequest();
-                xhr.addEventListener('load', () => {
-                  logger.log(LogLevel.INFO, xhr.responseText);
-                });
-                xhr.open('GET', `login.php?id=${id}`);
-                xhr.send();
+              
+              const xhr = new XMLHttpRequest();
+              xhr.addEventListener('load', () => {
+                logger.log(LogLevel.INFO, xhr.responseText);
+              });
+              xhr.open('POST', 'login.php');
+              xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+              xhr.send(`idtoken=${idToken}`);
+              xhr.send();
             },
             'onfailure': error => {
               logger.log(LogLevel.ERROR, error);

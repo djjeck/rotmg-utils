@@ -5,6 +5,8 @@
 class Storage {
   constructor() {
     this.cache = {};
+    // Load the value into the cache.
+    this.readString('last-modified', );
     
     // Assuming there is only one instance of Storage.
     window.manualOverride = (key, value) => {

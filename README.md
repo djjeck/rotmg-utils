@@ -4,7 +4,7 @@ Tools for Realm of the Mad God players.
 Hosted at <a href="http://www.djjeck.com/projects/rotmg/">www.djjeck.com/projects/rotmg</a>.
 
 <br>
-<a href="http://www.djjeck.com/projects/rotmg/tinkerer-items.html">Tinkerer items</a>
+<a href="http://www.djjeck.com/projects/rotmg/tinkerer-items">Tinkerer items</a>
 <br>
 Keep track of Daily Quest items stored in your vault, so that you know which ones to pick up from your purple bags.
 <br>

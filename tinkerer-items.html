@@ -463,7 +463,7 @@
                   key: 'tinkerer-items',
                   data: JSON.stringify(storage.dumpCache()),
                 }, text => {
-                  console.log(LogLevel.INFO, 'Exported data into the cloud');
+                  logger.log(LogLevel.INFO, 'Exported data into the cloud');
                 });
               };
               
@@ -475,10 +475,10 @@
                   idToken: idToken,
                   key: 'tinkerer-items',
                 }, text => {
-                  console.log(LogLevel.DEBUG, `Got data from server: ${text}`);
+                  logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
                   // TODO make sure the file actually is a cache dump.
                   storage.importCache(text);
-                  console.log(LogLevel.INFO, 'Imported data from the cloud');
+                  logger.log(LogLevel.INFO, 'Imported data from the cloud');
                   // Refresh the whole page, i.e. the lazy way.
                   window.location.reload();
                   

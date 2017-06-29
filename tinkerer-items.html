@@ -454,36 +454,18 @@
               const idToken = googleUser.getAuthResponse().id_token;
               logger.log(LogLevel.INFO, `Logged in ${id} (${profile.getName()} <${profile.getEmail()}>)`);
               
+              // TODO move to a login object.
+              window.googleIdToken = idToken;
+              
               const exportButtonEl = document.createElement('button');
               exportButtonEl.className = 'button';
               exportButtonEl.innerText = 'Export to cloud';
-              exportButtonEl.onclick = () => {
-                writeToServer({
-                  idToken: idToken,
-                  key: 'tinkerer-items',
-                  data: JSON.stringify(storage.dumpCache()),
-                }, text => {
-                  logger.log(LogLevel.INFO, 'Exported data into the cloud');
-                });
-              };
+              exportButtonEl.onclick = () => exportToServer;
               
               const importButtonEl = document.createElement('button');
               importButtonEl.className = 'button';
               importButtonEl.innerText = 'Import from cloud';
-              importButtonEl.onclick = () => {
-                readFromServer({
-                  idToken: idToken,
-                  key: 'tinkerer-items',
-                }, text => {
-                  logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
-                  // TODO make sure the file actually is a cache dump.
-                  storage.importCache(text);
-                  logger.log(LogLevel.INFO, 'Imported data from the cloud');
-                  // Refresh the whole page, i.e. the lazy way.
-                  window.location.reload();
-                  
-                });
-              };
+              importButtonEl.onclick = importFromServer;
               
               const exportContainerEl = document.getElementById('export');
               exportContainerEl.appendChild(exportButtonEl);
@@ -493,6 +475,41 @@
               logger.log(LogLevel.ERROR, error);
             },
           });
+        });
+      }
+      
+      function importFromServer() {
+        if (!googleIdToken) {
+          logger.log(LogLevel.ERROR, 'Trying to import while not logged in');
+          return;
+        }
+        
+        readFromServer({
+          idToken: googleIdToken,
+          key: 'tinkerer-items',
+        }, text => {
+          logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
+          // TODO make sure the file actually is a cache dump.
+          storage.importCache(text);
+          logger.log(LogLevel.INFO, 'Imported data from the cloud');
+          // Refresh the whole page, i.e. the lazy way.
+          window.location.reload();
+          
+        });
+      }
+      
+      function exportToServer() {
+        if (!googleIdToken) {
+          logger.log(LogLevel.ERROR, 'Trying to export while not logged in');
+          return;
+        }
+        
+        writeToServer({
+          idToken: googleIdToken,
+          key: 'tinkerer-items',
+          data: JSON.stringify(storage.dumpCache()),
+        }, text => {
+          logger.log(LogLevel.INFO, 'Exported data into the cloud');
         });
       }
       

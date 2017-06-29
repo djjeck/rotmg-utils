@@ -305,6 +305,10 @@
         const increaseQuantity = () => {
           quantity++;
           storage.writeNumber(key, quantity);
+          // TODO Move auto-save to a centralized location.
+          if (googleIdToken) {
+            exportToServer();
+          }
           decorateRewards(tier);
           updateQuantity();
         };
@@ -315,6 +319,10 @@
           }
           quantity--;
           storage.writeNumber(key, quantity);
+          // TODO Move auto-save to a centralized location.
+          if (googleIdToken) {
+            exportToServer();
+          }
           decorateRewards(tier);
           updateQuantity();
         };

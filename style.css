@@ -130,8 +130,9 @@ body a {
   vertical-align: bottom;
 }
 
+.tinkererContainer,
 .module {
-  display: block;
+  position: relative;
   margin: 20px auto;
   width: calc(
     /* 9 Items and their margins */
@@ -142,7 +143,11 @@ body a {
     2 * var(--sprite-size) +
     /* Not sure where this comes from */
     5px);
-  
+  z-index: 2;
+}
+
+.module {
+  display: block;
   padding: 15px;
   background-color: rgba(0, 0, 0, 0.3);
 }
@@ -294,8 +299,15 @@ body a {
   transform-origin: right top;
 }
 
+.githubBanner a,
+.githubBanner img {
+  position: relative;
+  z-index: 1;
+}
+
 .popup {
   display: block;
+  position: relative;
   min-width: 100px;
   max-width: 300px;
   position: fixed;
@@ -305,6 +317,7 @@ body a {
   border: 2px solid var(--color-red);
   background-color: #504538;
   color: #D1D1D1;
+  z-index: 4;
 }
 
 .popup {
@@ -331,6 +344,7 @@ body a {
   border-radius: 10px;
   color: #D1D1D1;
   font-size: 15px;
+  z-index: 3;
 }
 
 #hoverInfo .section {

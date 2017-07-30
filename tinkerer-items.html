@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="logger.js"></script>
     <script type="text/javascript" src="storage.js"></script>
+    <script type="text/javascript" src="items-data.js"></script>
     <script type="text/javascript" src="rotmg-items.js"></script>
     <script type="text/javascript">
       const ENOUGH_ARMOR_DEFAULT = 1;
@@ -184,8 +185,9 @@
       const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
+      const itemsData = new ItemsData(storage);
       
-      logger.setLogLevel(LogLevel[storage.readString('log-level', 'INFO')]);
+      logger.setLogLevel(LogLevel[itemsData.getLogLevel()]);
       
       function bodyLoad() {
         // Initialize config first, for defaults.
@@ -281,7 +283,7 @@
         const src = item.getImage();
         const name = item.getInfo().name;
         
-        let quantity = storage.readNumber(key);
+        let quantity = itemsData.getQuantity(key);
         const id = `item-${key}`;
         
         const itemTemplate = document.importNode(document.querySelector('#itemTemplate').content, true);
@@ -304,7 +306,7 @@
         
         const increaseQuantity = () => {
           quantity++;
-          storage.writeNumber(key, quantity);
+          itemsData.writeQuantity(key, quantity);
           // TODO Move auto-save to a centralized location.
           if (googleIdToken) {
             exportToServer();
@@ -318,7 +320,7 @@
             return;
           }
           quantity--;
-          storage.writeNumber(key, quantity);
+          itemsData.writeQuantity(key, quantity);
           // TODO Move auto-save to a centralized location.
           if (googleIdToken) {
             exportToServer();
@@ -340,8 +342,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), ENOUGH_ARMOR_DEFAULT);
-        const enoughWeapon = storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), ENOUGH_WEAPON_DEFAULT);
+        const enoughArmor = itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.ARMOR), ENOUGH_ARMOR_DEFAULT);
+        const enoughWeapon = itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.WEAPON), ENOUGH_WEAPON_DEFAULT);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');
@@ -351,12 +353,12 @@
         updateVaultSlotsConfig();
         
         enoughArmorInput.onclick = enoughArmorInput.onchange = () => {
-          storage.writeNumber(keys.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
+          itemsData.writeEnough(keys.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
         enoughWeaponInput.onclick = enoughWeaponInput.onchange = () => {
-          storage.writeNumber(keys.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
+          itemsData.writeEnough(keys.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
         };
@@ -377,7 +379,7 @@
         
         exportButton.onclick = () => {
           // Assuming all necessary values have been read once.
-          const cache = storage.dumpCache();
+          const cache = itemsData.exportData();
           // Comments are not allowed in JSON. Using properties prefixed with _ (they go at the end).
           cache['_'] = ''; // Just a spacer.
           cache['_exported-from'] = 'http://www.djjeck.com/projects/rotmg/tinkerer-items.html';
@@ -413,8 +415,7 @@
             const file = e.target.files[0];
             const reader = new FileReader();
             reader.onload = e => {
-              // TODO make sure the file actually is a cache dump.
-              storage.importCache(e.target.result);
+              itemsData.importData(e.target.result);
               logger.log(LogLevel.INFO, 'Data imported successfully');
               // Refresh the whole page, i.e. the lazy way.
               window.location.reload();
@@ -428,7 +429,7 @@
         resetButton.onclick = () => {
           const confirmation = confirm('All item quantities will be set to 0\n\nAre you sure?');
           if (confirmation) {
-            storage.clear();
+            itemsData.clear();
             // Refresh the whole page, i.e. the lazy way.
             window.location.reload();
           }
@@ -436,7 +437,7 @@
         
         document.getElementById('exportContainer').appendChild(exportEl);
         
-        const googleLoginEnabled = storage.readBoolean('experimental_use-google-login', false);
+        const googleLoginEnabled = itemsData.getUseGoogleLogin();
         if (googleLoginEnabled) {
           // The button must be initialized after the element is added to the DOM.
           initGoogleSignIn();
@@ -497,12 +498,10 @@
           key: 'tinkerer-items',
         }, text => {
           logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
-          // TODO make sure the file actually is a cache dump.
-          storage.importCache(text);
+          itemsData.importData(text);
           logger.log(LogLevel.INFO, 'Imported data from the cloud');
           // Refresh the whole page, i.e. the lazy way.
           window.location.reload();
-          
         });
       }
       
@@ -515,7 +514,7 @@
         writeToServer({
           idToken: googleIdToken,
           key: 'tinkerer-items',
-          data: JSON.stringify(storage.dumpCache()),
+          data: JSON.stringify(itemsData.exportData()),
         }, text => {
           logger.log(LogLevel.INFO, 'Exported data into the cloud');
         });
@@ -560,8 +559,8 @@
       
       function updateVaultSlotsConfig() {
         const vaultSlots = 3 * (
-          storage.readNumber(keys.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
-          storage.readNumber(keys.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
+          itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
+          itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
         const vaultChests = vaultSlots / 8;
         
         const vaultChestsVisualEl = document.getElementById('config-vault-chests-visual');
@@ -598,14 +597,14 @@
             const type = item.getItemType();
             const id = `item-${key}`;
             const itemEl = document.getElementById(id);
-            decorateQuantity(itemEl, type, storage.readNumber(key));
+            decorateQuantity(itemEl, type, itemsData.getQuantity(key));
           }
         }
       }
       
       function decorateQuantity(element, type, quantity) {
         element.classList.toggle('missing', quantity == 0);
-        element.classList.toggle('enough', quantity >= storage.readNumber(keys.makeConfigKeyEnough(type)));
+        element.classList.toggle('enough', quantity >= itemsData.getEnough(keys.makeConfigKeyEnough(type)));
       }
       
       function decorateRewards(tier) {
@@ -614,7 +613,7 @@
             getItems().
             map(item => item.getQuantityKey());
         
-        const ownedItems = itemKeys.filter(key => storage.readNumber(key) > 0).length;
+        const ownedItems = itemKeys.filter(key => itemsData.getQuantity(key) > 0).length;
         const totalItems = itemKeys.length;
         const pct = 100 * ownedItems / totalItems;
         
@@ -628,7 +627,7 @@
         return Math.floor(number * 100) / 100;
       }
       
-      const useGoogleAnalytics = storage.readBoolean('use-google-analytics', true);
+      const useGoogleAnalytics = itemsData.getUseGoogleAnalytics();
       if (useGoogleAnalytics) {
         // Google Analytics.
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

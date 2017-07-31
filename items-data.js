@@ -60,7 +60,6 @@ class ItemsData {
       this.logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
       this.importData(text);
       this.logger.log(LogLevel.INFO, 'Imported data from the cloud');
-      success();
     });
   }
   

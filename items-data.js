@@ -73,7 +73,7 @@ class ItemsData {
       idToken: this.googleIdToken,
       key: 'tinkerer-items',
       data: JSON.stringify(this.exportData()),
-    }, text => {
+    }.then(text => {
       this.logger.log(LogLevel.INFO, 'Exported data into the cloud');
     });
   }
@@ -102,27 +102,39 @@ class ItemsData {
         const value = data[key];
         params.push(`${key}=${value}`);
       }
+      
       xhr.open('GET', 'read_data.php?' + params.join('&'));
       xhr.send();
     });
   }
   
-  writeToServer(data, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.addEventListener('load', () => {
-      if (xhr.status == 200) {
-        callback(xhr.responseText);
-      } else {
-        this.logger.log(LogLevel.ERROR, `Error ${xhr.status}\n${xhr.responseText}`);
+  writeToServer(data) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener('load', () => {
+        if (xhr.status == 200) {
+          resolve(xhr.responseText);
+        } else {
+          const error = `Error ${xhr.status}\n${xhr.responseText}`;
+          this.logger.log(LogLevel.ERROR, error);
+          reject(error);
+        }
+      });
+      xhr.addEventListener('error', () => {
+        const error = 'Network error, could not save';
+        // TODO move logging outside of this class.
+        this.logger.log(LogLevel.ERROR, error);
+        reject(error);
+      });
+      
+      xhr.open('POST', 'write_data.php');
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      const params = [];
+      for (const key in data) {
+        const value = data[key];
+        params.push(`${key}=${value}`);
       }
+      xhr.send(params.join('&'));
     });
-    xhr.open('POST', 'write_data.php');
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    const params = [];
-    for (const key in data) {
-      const value = data[key];
-      params.push(`${key}=${value}`);
-    }
-    xhr.send(params.join('&'));        
   }
 }

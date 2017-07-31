@@ -73,7 +73,7 @@ class ItemsData {
       idToken: this.googleIdToken,
       key: 'tinkerer-items',
       data: JSON.stringify(this.exportData()),
-    }.then(text => {
+    }).then(text => {
       this.logger.log(LogLevel.INFO, 'Exported data into the cloud');
     });
   }

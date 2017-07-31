@@ -53,16 +53,14 @@ class ItemsData {
       return Promise.resolve();
     }
     
-    return new Promise((success, failure) => {
-      this.readFromServer({
-        idToken: this.googleIdToken,
-        key: 'tinkerer-items',
-      }, text => {
-        this.logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
-        this.importData(text);
-        this.logger.log(LogLevel.INFO, 'Imported data from the cloud');
-        success();
-      });
+    return this.readFromServer({
+      idToken: this.googleIdToken,
+      key: 'tinkerer-items',
+    }).then(text => {
+      this.logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
+      this.importData(text);
+      this.logger.log(LogLevel.INFO, 'Imported data from the cloud');
+      success();
     });
   }
   
@@ -79,23 +77,34 @@ class ItemsData {
       this.logger.log(LogLevel.INFO, 'Exported data into the cloud');
     });
   }
-      
-  readFromServer(data, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.addEventListener('load', () => {
-      if (xhr.status == 200) {
-        callback(xhr.responseText);
-      } else {
-        this.logger.log(LogLevel.ERROR, `Error ${xhr.status}\n${xhr.responseText}`);
+  
+  readFromServer(data) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener('load', () => {
+        if (xhr.status == 200) {
+          resolve(xhr.responseText);
+        } else {
+          const error = `Error ${xhr.status}\n${xhr.responseText}`;
+          // TODO move logging outside of this class.
+          this.logger.log(LogLevel.ERROR, error);
+          reject(error);
+        }
+      });
+      xhr.addEventListener('error', () => {
+        const error = 'Network error, could not load';
+        // TODO move logging outside of this class.
+        this.logger.log(LogLevel.ERROR, error);
+        reject(error);
+      });
+      const params = [];
+      for (const key in data) {
+        const value = data[key];
+        params.push(`${key}=${value}`);
       }
+      xhr.open('GET', 'read_data.php?' + params.join('&'));
+      xhr.send();
     });
-    const params = [];
-    for (const key in data) {
-      const value = data[key];
-      params.push(`${key}=${value}`);
-    }
-    xhr.open('GET', 'read_data.php?' + params.join('&'));
-    xhr.send();
   }
   
   writeToServer(data, callback) {

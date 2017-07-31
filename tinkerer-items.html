@@ -185,15 +185,26 @@
       const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
-      const itemsData = new ItemsData(storage);
+      const itemsData = new ItemsData(storage, logger);
       
       logger.setLogLevel(LogLevel[itemsData.getLogLevel()]);
       
       function bodyLoad() {
         // Initialize config first, for defaults.
         initConfig();
-        render();
-        initExport();
+        const googleLoginEnabled = itemsData.getUseGoogleLogin();
+        if (googleLoginEnabled) {
+          // The button must be initialized after the element is added to the DOM.
+          initGoogleSignIn().then((isSignedIn) => {
+            render();
+            initExport();
+          });
+        } else {
+          const googleSignInButton = document.getElementById('googleSignIn');
+          googleSignInButton.parentNode.removeChild(googleSignInButton);
+          render();
+          initExport();
+        }
         document.getElementById('unsupportedBrowser').style.display = 'none';
         document.getElementById('supportedBrowser').style.display = 'block';
       }
@@ -307,10 +318,6 @@
         const increaseQuantity = () => {
           quantity++;
           itemsData.writeQuantity(key, quantity);
-          // TODO Move auto-save to a centralized location.
-          if (googleIdToken) {
-            exportToServer();
-          }
           decorateRewards(tier);
           updateQuantity();
         };
@@ -321,10 +328,6 @@
           }
           quantity--;
           itemsData.writeQuantity(key, quantity);
-          // TODO Move auto-save to a centralized location.
-          if (googleIdToken) {
-            exportToServer();
-          }
           decorateRewards(tier);
           updateQuantity();
         };
@@ -436,125 +439,47 @@
         };
         
         document.getElementById('exportContainer').appendChild(exportEl);
-        
-        const googleLoginEnabled = itemsData.getUseGoogleLogin();
-        if (googleLoginEnabled) {
-          // The button must be initialized after the element is added to the DOM.
-          initGoogleSignIn();
-        } else {
-          const googleSignInButton = document.getElementById('googleSignIn');
-          googleSignInButton.parentNode.removeChild(googleSignInButton);
-        }
       }
       
       function initGoogleSignIn() {
-        gapi.load('auth2', () => {
-          const auth2 = gapi.auth2.init({
-            // RotMG utils web.
-            client_id: '127841094108-km6bcils31kjpqk19i3pv4lsp086kmma.apps.googleusercontent.com',
-            cookiepolicy: 'single_host_origin',
+        return new Promise((success, failure) => {
+          gapi.load('auth2', () => {
+            const auth2 = gapi.auth2.init({
+              // RotMG utils web.
+              client_id: '127841094108-km6bcils31kjpqk19i3pv4lsp086kmma.apps.googleusercontent.com',
+              cookiepolicy: 'single_host_origin',
+            });
+            auth2.then(() => {
+              const signedIn = auth2.isSignedIn.get();
+              success(signedIn);
+              
+              gapi.signin2.render('googleSignIn', {
+                'scope': 'profile email',
+                'height': 23, // px. Matches other buttons.
+                'onsuccess': googleUser => {
+                  const profile = googleUser.getBasicProfile();
+                  const id = profile.getId();
+                  const idToken = googleUser.getAuthResponse().id_token;
+                  logger.log(LogLevel.INFO, `Logged in ${id} (${profile.getName()} <${profile.getEmail()}>)`);
+                
+                  // TODO Instead of refreshing, use the new login token
+                  // itemsData.setLoginToken(idToken);
+                
+                  if (!signedIn) {
+                    // The user was not signed in when the auth object first loaded.
+                    // This is a new login.
+                  
+                    // Refresh the whole page, i.e. the lazy way.
+                    window.location.reload();
+                  }
+                },
+                'onfailure': error => {
+                  logger.log(LogLevel.ERROR, error);
+                },
+              });
+            });
           });
-          gapi.signin2.render('googleSignIn', {
-            'scope': 'profile email',
-            'height': 23, // px. Matches other buttons.
-            'onsuccess': googleUser => {
-              const profile = googleUser.getBasicProfile();
-              const id = profile.getId();
-              const idToken = googleUser.getAuthResponse().id_token;
-              logger.log(LogLevel.INFO, `Logged in ${id} (${profile.getName()} <${profile.getEmail()}>)`);
-              
-              // TODO move to a login object.
-              window.googleIdToken = idToken;
-              
-              const exportButtonEl = document.createElement('button');
-              exportButtonEl.className = 'button';
-              exportButtonEl.innerText = 'Export to cloud';
-              exportButtonEl.onclick = () => exportToServer;
-              
-              const importButtonEl = document.createElement('button');
-              importButtonEl.className = 'button';
-              importButtonEl.innerText = 'Import from cloud';
-              importButtonEl.onclick = importFromServer;
-              
-              const exportContainerEl = document.getElementById('export');
-              exportContainerEl.appendChild(exportButtonEl);
-              exportContainerEl.appendChild(importButtonEl);
-            },
-            'onfailure': error => {
-              logger.log(LogLevel.ERROR, error);
-            },
-          });
         });
-      }
-      
-      function importFromServer() {
-        if (!googleIdToken) {
-          logger.log(LogLevel.ERROR, 'Trying to import while not logged in');
-          return;
-        }
-        
-        readFromServer({
-          idToken: googleIdToken,
-          key: 'tinkerer-items',
-        }, text => {
-          logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
-          itemsData.importData(text);
-          logger.log(LogLevel.INFO, 'Imported data from the cloud');
-          // Refresh the whole page, i.e. the lazy way.
-          window.location.reload();
-        });
-      }
-      
-      function exportToServer() {
-        if (!googleIdToken) {
-          logger.log(LogLevel.ERROR, 'Trying to export while not logged in');
-          return;
-        }
-        
-        writeToServer({
-          idToken: googleIdToken,
-          key: 'tinkerer-items',
-          data: JSON.stringify(itemsData.exportData()),
-        }, text => {
-          logger.log(LogLevel.INFO, 'Exported data into the cloud');
-        });
-      }
-      
-      function readFromServer(data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', () => {
-          if (xhr.status == 200) {
-            callback(xhr.responseText);
-          } else {
-            logger.log(LogLevel.ERROR, `Error ${xhr.status}\n${xhr.responseText}`);
-          }
-        });
-        const params = [];
-        for (const key in data) {
-          const value = data[key];
-          params.push(`${key}=${value}`);
-        }
-        xhr.open('GET', 'read_data.php?' + params.join('&'));
-        xhr.send();
-      }
-      
-      function writeToServer(data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', () => {
-          if (xhr.status == 200) {
-            callback(xhr.responseText);
-          } else {
-            logger.log(LogLevel.ERROR, `Error ${xhr.status}\n${xhr.responseText}`);
-          }
-        });
-        xhr.open('POST', 'write_data.php');
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        const params = [];
-        for (const key in data) {
-          const value = data[key];
-          params.push(`${key}=${value}`);
-        }
-        xhr.send(params.join('&'));        
       }
       
       function updateVaultSlotsConfig() {
@@ -680,6 +605,7 @@
       </div>
       <div id="exportContainer" class="module">
       </div>
+      <div class="button" id="googleSignIn"></div>
       <div id="footer" class="module">
         Made by <a href="http://realmeye.com/player/djjeck" target="_blank">djjeck</a>.
         Source on <a href="https://github.com/djjeck/rotmg-utils" target="_blank">GitHub</a>
@@ -742,7 +668,6 @@
       
       <template id="exportTemplate">
         <div id="export">
-          <div class="button" id="googleSignIn"></div>
           <button class="button" id="exportButton">Export</button>
           <button class="button" id="importButton">Import</button>
           <button class="button" id="resetButton">Reset data</button>

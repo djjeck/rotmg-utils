@@ -192,19 +192,12 @@
       function bodyLoad() {
         // Initialize config first, for defaults.
         initConfig();
-        const googleLoginEnabled = itemsData.getUseGoogleLogin();
-        if (googleLoginEnabled) {
-          // The button must be initialized after the element is added to the DOM.
-          initGoogleSignIn().then((isSignedIn) => {
-            render();
-            initExport();
-          });
-        } else {
-          const googleSignInButton = document.getElementById('googleSignIn');
-          googleSignInButton.parentNode.removeChild(googleSignInButton);
+        // The button must be initialized after the element is added to the DOM.
+        initGoogleSignIn().then((isSignedIn) => {
           render();
           initExport();
-        }
+        });
+        // TODO Show loading.
         document.getElementById('unsupportedBrowser').style.display = 'none';
         document.getElementById('supportedBrowser').style.display = 'block';
       }

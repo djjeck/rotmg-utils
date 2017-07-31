@@ -30,10 +30,6 @@ class ItemsData {
     return this.storage.readBoolean('use-google-analytics', true);
   }
   
-  getUseGoogleLogin() {
-    return this.storage.readBoolean('experimental_use-google-login', false);
-  }
-  
   importData(data) {
     // TODO Make sure the file actually is a cache dump.
     this.storage.importCache(data);

@@ -13,6 +13,9 @@ class Storage {
       this.writeString(key, value);
       return `Set the flag "${key}" with value "${value}"`;
     };
+    
+    // TODO remove this when all uses have been deleted from clients.
+    localStorage.removeItem('experimental_use-google-login');
   }
   
   readBoolean(key, defaultValue = false) {

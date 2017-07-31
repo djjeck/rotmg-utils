@@ -45,21 +45,24 @@ class ItemsData {
   
   setLoginToken(idToken) {
     this.googleIdToken = idToken;
-    this.importFromServer();
+    return this.importFromServer();
   }
   
   importFromServer() {
     if (!this.googleIdToken) {
-      return;
+      return Promise.resolve();
     }
     
-    this.readFromServer({
-      idToken: this.googleIdToken,
-      key: 'tinkerer-items',
-    }, text => {
-      this.logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
-      this.importData(text);
-      this.logger.log(LogLevel.INFO, 'Imported data from the cloud');
+    return new Promise((success, failure) => {
+      this.readFromServer({
+        idToken: this.googleIdToken,
+        key: 'tinkerer-items',
+      }, text => {
+        this.logger.log(LogLevel.DEBUG, `Got data from server: ${text}`);
+        this.importData(text);
+        this.logger.log(LogLevel.INFO, 'Imported data from the cloud');
+        success();
+      });
     });
   }
   

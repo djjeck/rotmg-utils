@@ -192,10 +192,16 @@
       function bodyLoad() {
         // Initialize config first, for defaults.
         initConfig();
-        // The button must be initialized after the element is added to the DOM.
-        initGoogleSignIn().then((isSignedIn) => {
-          render();
-          initExport();
+        initGoogleSignIn().then((idToken) => {
+          if (idToken) {
+            itemsData.setLoginToken(idToken).then(() => {
+              render();
+              initExport();
+            });
+          } else {
+            render();
+            initExport();
+          }
         });
         // TODO Show loading.
         document.getElementById('unsupportedBrowser').style.display = 'none';
@@ -444,7 +450,7 @@
             });
             auth2.then(() => {
               const signedIn = auth2.isSignedIn.get();
-              success(signedIn);
+              success(signedIn ? auth2.currentUser.get().getAuthResponse().id_token : null);
               
               gapi.signin2.render('googleSignIn', {
                 'scope': 'profile email',

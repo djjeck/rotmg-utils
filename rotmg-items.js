@@ -10,7 +10,11 @@ function makeEnum(names) {
     strings[value] = name.toLowerCase();
   }
   obj.values = () => values;
-  obj.toString = value => strings[value];
+  obj.toString = value => {
+    if (!value || !strings[value])
+      throw `Enum ${value} not found.`;
+    return strings[value];
+  }
   return obj;
 }
 

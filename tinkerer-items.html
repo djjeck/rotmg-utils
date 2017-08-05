@@ -206,12 +206,10 @@
             itemsData.setLoginToken(idToken).then(() => {
               render();
               initExport();
-              decorateQuantities();
             });
           } else {
             render();
             initExport();
-            decorateQuantities();
           }
         });
         // TODO Show loading.
@@ -322,7 +320,7 @@
         const updateQuantity = () => {
           quantityEl.textContent = quantity;
           quantityLessEl.classList.toggle('disabled', quantity == 0);
-          decorateQuantity(itemEl, type, quantity);
+          decorateQuantity(itemEl, tier, type, quantity);
         }
         
         const increaseQuantity = () => {
@@ -491,8 +489,8 @@
       
       function updateVaultSlotsConfig() {
         // Sum all config enough values.
-        const vaultSlots = [Tier.T7, Tier.T8, Tier.T9].
-            map(tier => [ItemType.ARMOR, ItemType.WEAPON].
+        const vaultSlots = Tier.values().
+            map(tier => ItemType.values().
                 map(type => itemsData.getEnough(tier, type) *
                     (type == ItemType.ARMOR ? ArmorType : WeaponType).values().length).
                 reduce((a, b) => a + b)).

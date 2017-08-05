@@ -13,8 +13,16 @@
     <script type="text/javascript" src="items-data.js"></script>
     <script type="text/javascript" src="rotmg-items.js"></script>
     <script type="text/javascript">
-      const ENOUGH_ARMOR_DEFAULT = 1;
-      const ENOUGH_WEAPON_DEFAULT = 2;
+      const ENOUGH_DEFAULT = {};
+      ENOUGH_DEFAULT[Tier.T7] = {};
+      ENOUGH_DEFAULT[Tier.T8] = {};
+      ENOUGH_DEFAULT[Tier.T9] = {};
+      ENOUGH_DEFAULT[Tier.T7][ItemType.ARMOR] = 1;
+      ENOUGH_DEFAULT[Tier.T7][ItemType.WEAPON] = 2;
+      ENOUGH_DEFAULT[Tier.T8][ItemType.ARMOR] = 1;
+      ENOUGH_DEFAULT[Tier.T8][ItemType.WEAPON] = 2;
+      ENOUGH_DEFAULT[Tier.T9][ItemType.ARMOR] = 2;
+      ENOUGH_DEFAULT[Tier.T9][ItemType.WEAPON] = 3;
       
       const HOVER_INFO_X_OFFSET = 5;
       const HOVER_INFO_Y_OFFSET = 25;
@@ -57,9 +65,10 @@
           return `reward-${tierKey}`;
         }
         
-        makeConfigKeyEnough(type) {
+        makeConfigKeyEnough(tier, type) {
+          const tierKey = this.getTierKey(tier);
           const typeKey = ItemType.toString(type) + 's';
-          return `enough-${typeKey}`;
+          return `enough-${tierKey}-${typeKey}`;
         }
         
         getImagePath(key) {
@@ -197,10 +206,12 @@
             itemsData.setLoginToken(idToken).then(() => {
               render();
               initExport();
+              decorateQuantities();
             });
           } else {
             render();
             initExport();
+            decorateQuantities();
           }
         });
         // TODO Show loading.
@@ -344,26 +355,23 @@
       }
       
       function initConfig() {
-        const enoughArmor = itemsData.getEnough(ItemType.ARMOR, ENOUGH_ARMOR_DEFAULT);
-        const enoughWeapon = itemsData.getEnough(ItemType.WEAPON, ENOUGH_WEAPON_DEFAULT);
+        for (const tier of [Tier.T7, Tier.T8, Tier.T9]) {
+          for (const type of [ItemType.ARMOR, ItemType.WEAPON]) {
+            const enoughValue = itemsData.getEnough(tier, type, ENOUGH_DEFAULT[tier][type]);
+            const enoughInput = document.getElementById('config-' + keys.makeConfigKeyEnough(tier, type));
+            enoughInput.value = enoughValue;
+            
+            enoughInput.onclick = enoughInput.onchange = () => {
+              // tier and type have the right value.
+              // Old JS closure problems are gone with let, const, and for..of.
+              itemsData.writeEnough(tier, type, enoughInput.value);
+              updateVaultSlotsConfig();
+              decorateQuantities();
+            };
+          }
+        }
         
-        const enoughArmorInput = document.getElementById('config-enough-armors');
-        const enoughWeaponInput = document.getElementById('config-enough-weapons');
-        
-        enoughArmorInput.value = enoughArmor;
-        enoughWeaponInput.value = enoughWeapon;
         updateVaultSlotsConfig();
-        
-        enoughArmorInput.onclick = enoughArmorInput.onchange = () => {
-          itemsData.writeEnough(ItemType.ARMOR, enoughArmorInput.value);
-          updateVaultSlotsConfig();
-          decorateQuantities('armors');
-        };
-        enoughWeaponInput.onclick = enoughWeaponInput.onchange = () => {
-          itemsData.writeEnough(ItemType.WEAPON, enoughWeaponInput.value);
-          updateVaultSlotsConfig();
-          decorateQuantities('weapons');
-        };
       }
       
       function initExport() {
@@ -482,9 +490,13 @@
       }
       
       function updateVaultSlotsConfig() {
-        const vaultSlots = 3 * (
-          itemsData.getEnough(ItemType.ARMOR) * 3 +
-          itemsData.getEnough(ItemType.WEAPON) * 6);
+        // Sum all config enough values.
+        const vaultSlots = [Tier.T7, Tier.T8, Tier.T9].
+            map(tier => [ItemType.ARMOR, ItemType.WEAPON].
+                map(type => itemsData.getEnough(tier, type) *
+                    (type == ItemType.ARMOR ? ArmorType : WeaponType).values().length).
+                reduce((a, b) => a + b)).
+            reduce((a, b) => a + b);
         const vaultChests = vaultSlots / 8;
         
         const vaultChestsVisualEl = document.getElementById('config-vault-chests-visual');
@@ -514,21 +526,23 @@
         vaultSlotsEl.innerText = vaultSlots;
       }
       
-      function decorateQuantities(type) {
+      function decorateQuantities() {
+        // TODO only redecorate affected ones
         for (const row of tinkererItems) {
           for (const item of row.getItems()) {
             const key = item.getQuantityKey();
+            const tier = item.getTier();
             const type = item.getItemType();
             const id = `item-${key}`;
             const itemEl = document.getElementById(id);
-            decorateQuantity(itemEl, type, itemsData.getQuantity(key));
+            decorateQuantity(itemEl, tier, type, itemsData.getQuantity(key));
           }
         }
       }
       
-      function decorateQuantity(element, type, quantity) {
+      function decorateQuantity(element, tier, type, quantity) {
         element.classList.toggle('missing', quantity == 0);
-        element.classList.toggle('enough', quantity >= itemsData.getEnough(type));
+        element.classList.toggle('enough', quantity >= itemsData.getEnough(tier, type));
       }
       
       function decorateRewards(tier) {
@@ -586,12 +600,28 @@
       </div>
       <div id="config" class="module">
         <label>
-          <span class="label">Enough armors</span>
-          <input id="config-enough-armors" type="number" min="1" max="99" step="1" />
+          <span class="label">Enough T7 armors</span>
+          <input id="config-enough-t7-armors" type="number" min="1" max="99" step="1" />
         </label>
         <label>
-          <span class="label">Enough weapons</span>
-          <input id="config-enough-weapons" type="number" min="1" max="99" step="1" />
+          <span class="label">Enough T7 weapons</span>
+          <input id="config-enough-t7-weapons" type="number" min="1" max="99" step="1" />
+        </label>
+        <label>
+          <span class="label">Enough T8 armors</span>
+          <input id="config-enough-t8-armors" type="number" min="1" max="99" step="1" />
+        </label>
+        <label>
+          <span class="label">Enough T8 weapons</span>
+          <input id="config-enough-t8-weapons" type="number" min="1" max="99" step="1" />
+        </label>
+        <label>
+          <span class="label">Enough T9 armors</span>
+          <input id="config-enough-t9-armors" type="number" min="1" max="99" step="1" />
+        </label>
+        <label>
+          <span class="label">Enough T9 weapons</span>
+          <input id="config-enough-t9-weapons" type="number" min="1" max="99" step="1" />
         </label>
         
         <label class="spaceOccupied">

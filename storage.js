@@ -14,8 +14,38 @@ class Storage {
       return `Set the flag "${key}" with value "${value}"`;
     };
     
+    this.migrateLegacyKeys();
+  }
+  
+  migrateLegacyKeys() {
     // TODO remove this when all uses have been deleted from clients.
     localStorage.removeItem('experimental_use-google-login');
+    if (this.cache['experimental_use-google-login']) {
+      delete this.cache['experimental_use-google-login'];
+    }
+
+    localStorage.removeItem('enough-t8-undefineds');
+    if (this.cache['enough-t8-undefineds']) {
+      delete this.cache['enough-t8-undefineds'];
+    }
+    
+    // TODO remove this when all uses have been migrated from clients.
+    const enoughArmorsLegacy = localStorage.getItem('enough-armors');
+    if (enoughArmorsLegacy !== null) {
+      localStorage.removeItem('enough-armors');
+      delete this.cache['enough-armors'];
+      this.writeNumber('enough-t7-armors', enoughArmorsLegacy);
+      this.writeNumber('enough-t8-armors', enoughArmorsLegacy);
+      this.writeNumber('enough-t9-armors', enoughArmorsLegacy);
+    }
+    const enoughWeaponsLegacy = localStorage.getItem('enough-weapons');
+    if (enoughWeaponsLegacy !== null) {
+      localStorage.removeItem('enough-weapons');
+      delete this.cache['enough-weapons'];
+      this.writeNumber('enough-t7-weapons', enoughWeaponsLegacy);
+      this.writeNumber('enough-t8-weapons', enoughWeaponsLegacy);
+      this.writeNumber('enough-t9-weapons', enoughWeaponsLegacy);
+    }
   }
   
   readBoolean(key, defaultValue = false) {
@@ -99,5 +129,7 @@ class Storage {
         this.writeString(key, this.cache[key]);
       }
     }
+    
+    this.migrateLegacyKeys();
   }
 }

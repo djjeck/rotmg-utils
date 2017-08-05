@@ -14,13 +14,13 @@ class ItemsData {
     this.exportToServer();
   }
   
-  getEnough(itemType, defaultValue) {
-    const key = this.keys.makeConfigKeyEnough(itemType);
+  getEnough(tier, type, defaultValue) {
+    const key = this.keys.makeConfigKeyEnough(tier, type);
     return this.storage.readNumber(key, defaultValue);
   }
   
-  writeEnough(itemType, value) {
-    const key = this.keys.makeConfigKeyEnough(itemType);
+  writeEnough(tier, type, value) {
+    const key = this.keys.makeConfigKeyEnough(tier, type);
     this.storage.writeNumber(key, value);
     this.exportToServer();
   }

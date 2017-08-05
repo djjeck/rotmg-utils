@@ -19,29 +19,21 @@ class Storage {
   
   migrateLegacyKeys() {
     // TODO remove this when all uses have been deleted from clients.
-    localStorage.removeItem('experimental_use-google-login');
-    if (this.cache['experimental_use-google-login']) {
-      delete this.cache['experimental_use-google-login'];
-    }
-
-    localStorage.removeItem('enough-t8-undefineds');
-    if (this.cache['enough-t8-undefineds']) {
-      delete this.cache['enough-t8-undefineds'];
-    }
+    this.clearKey('experimental_use-google-login');
     
     // TODO remove this when all uses have been migrated from clients.
     const enoughArmorsLegacy = localStorage.getItem('enough-armors');
     if (enoughArmorsLegacy !== null) {
-      localStorage.removeItem('enough-armors');
-      delete this.cache['enough-armors'];
+      this.clearKey('enough-armors');
       this.writeNumber('enough-t7-armors', enoughArmorsLegacy);
       this.writeNumber('enough-t8-armors', enoughArmorsLegacy);
       this.writeNumber('enough-t9-armors', enoughArmorsLegacy);
     }
+    
+    // TODO remove this when all uses have been migrated from clients.
     const enoughWeaponsLegacy = localStorage.getItem('enough-weapons');
     if (enoughWeaponsLegacy !== null) {
-      localStorage.removeItem('enough-weapons');
-      delete this.cache['enough-weapons'];
+      this.clearKey('enough-weapons');
       this.writeNumber('enough-t7-weapons', enoughWeaponsLegacy);
       this.writeNumber('enough-t8-weapons', enoughWeaponsLegacy);
       this.writeNumber('enough-t9-weapons', enoughWeaponsLegacy);
@@ -109,6 +101,14 @@ class Storage {
     this.cache[key] = value;
     localStorage.setItem(key, value);
     localStorage.setItem('last-modified', new Date().toISOString());
+  }
+  
+  clearKey(key) {
+    logger.log(LogLevel.DEBUG, `clearing ${key}`);
+    if (key in this.cache) {
+      delete this.cache[key];
+    }
+    localStorage.removeItem(key);
   }
   
   clear() {

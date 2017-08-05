@@ -185,7 +185,7 @@
       const logger = new Logger();
       const keys = new Keys();
       const storage = new Storage();
-      const itemsData = new ItemsData(storage, logger);
+      const itemsData = new ItemsData(keys, storage, logger);
       
       logger.setLogLevel(LogLevel[itemsData.getLogLevel()]);
       
@@ -344,8 +344,8 @@
       }
       
       function initConfig() {
-        const enoughArmor = itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.ARMOR), ENOUGH_ARMOR_DEFAULT);
-        const enoughWeapon = itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.WEAPON), ENOUGH_WEAPON_DEFAULT);
+        const enoughArmor = itemsData.getEnough(ItemType.ARMOR, ENOUGH_ARMOR_DEFAULT);
+        const enoughWeapon = itemsData.getEnough(ItemType.WEAPON, ENOUGH_WEAPON_DEFAULT);
         
         const enoughArmorInput = document.getElementById('config-enough-armors');
         const enoughWeaponInput = document.getElementById('config-enough-weapons');
@@ -355,12 +355,12 @@
         updateVaultSlotsConfig();
         
         enoughArmorInput.onclick = enoughArmorInput.onchange = () => {
-          itemsData.writeEnough(keys.makeConfigKeyEnough(ItemType.ARMOR), enoughArmorInput.value);
+          itemsData.writeEnough(ItemType.ARMOR, enoughArmorInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('armors');
         };
         enoughWeaponInput.onclick = enoughWeaponInput.onchange = () => {
-          itemsData.writeEnough(keys.makeConfigKeyEnough(ItemType.WEAPON), enoughWeaponInput.value);
+          itemsData.writeEnough(ItemType.WEAPON, enoughWeaponInput.value);
           updateVaultSlotsConfig();
           decorateQuantities('weapons');
         };
@@ -483,8 +483,8 @@
       
       function updateVaultSlotsConfig() {
         const vaultSlots = 3 * (
-          itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.ARMOR)) * 3 +
-          itemsData.getEnough(keys.makeConfigKeyEnough(ItemType.WEAPON)) * 6);
+          itemsData.getEnough(ItemType.ARMOR) * 3 +
+          itemsData.getEnough(ItemType.WEAPON) * 6);
         const vaultChests = vaultSlots / 8;
         
         const vaultChestsVisualEl = document.getElementById('config-vault-chests-visual');
@@ -528,7 +528,7 @@
       
       function decorateQuantity(element, type, quantity) {
         element.classList.toggle('missing', quantity == 0);
-        element.classList.toggle('enough', quantity >= itemsData.getEnough(keys.makeConfigKeyEnough(type)));
+        element.classList.toggle('enough', quantity >= itemsData.getEnough(type));
       }
       
       function decorateRewards(tier) {

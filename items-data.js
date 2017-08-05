@@ -1,5 +1,6 @@
 class ItemsData {
-  constructor(storage, logger) {
+  constructor(keys, storage, logger) {
+    this.keys = keys;
     this.storage = storage;
     this.logger = logger;
   }
@@ -13,11 +14,13 @@ class ItemsData {
     this.exportToServer();
   }
   
-  getEnough(key, defaultValue) {
+  getEnough(itemType, defaultValue) {
+    const key = this.keys.makeConfigKeyEnough(itemType);
     return this.storage.readNumber(key, defaultValue);
   }
   
-  writeEnough(key, value) {
+  writeEnough(itemType, value) {
+    const key = this.keys.makeConfigKeyEnough(itemType);
     this.storage.writeNumber(key, value);
     this.exportToServer();
   }
